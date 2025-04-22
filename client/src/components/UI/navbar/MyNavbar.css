@@ -1,0 +1,16 @@
+.navbar {
+    width: 100vw;
+    height: 70px;
+    display: flex;
+    background: #D4EDDA;
+    border-radius: 12px;
+    padding: 0 20px
+}
+.navbar__links {
+    color: white;
+    display: flex;
+    align-items: center;
+}
+.active {
+    color: darkred;
+}

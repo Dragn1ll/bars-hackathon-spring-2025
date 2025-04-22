@@ -1,0 +1,15 @@
+#myNotification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background: black;
+    opacity: 0.7;
+    border-radius: 12px;
+    color: white;
+    width: 250px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}

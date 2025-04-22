@@ -1,0 +1,73 @@
+.myDivInput {
+    display: flex;
+    margin: 12px 0;
+    position: relative;
+
+    & > span {
+        background: #fff;
+        color: #adafca;
+        display: inline-block;
+        font-weight: 400;
+        left: 16px;
+        padding: 0 8px;
+        position: absolute;
+        pointer-events: none;
+        transform: translatey(-50%);
+        top: 50%;
+        transition: all 300ms ease;
+        user-select: none;
+    }
+
+    & > input {
+        border-radius: 8px;
+        font-family: inherit;
+        padding: 16px 8px;
+        width: 100%;
+    }
+
+    & > input {
+        font-weight: bold;
+        transition: 100ms ease all;
+        width: 100%;
+
+        &[type=text],
+        &[type=password] {
+            border: 1.2px solid #ddd;
+        }
+
+        &:valid {
+            & + span {
+                top: 0;
+                font-size: 14.5px;
+            }
+        }
+
+        &:invalid {
+            & + span {
+                top: 50%;
+            }
+        }
+
+        &:focus {
+            & + span {
+                top: 0;
+            }
+        }
+
+        &:required {
+            box-shadow: none;
+        }
+
+        &:focus {
+            border-color: #b9eac3;
+            outline: none;
+            &:invalid {
+                box-shadow: none;
+                top: 50%;
+            }
+            &:valid {
+                top: 0;
+            }
+        }
+    }
+}
