@@ -1,6 +1,6 @@
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Persistence.DataAccess.Configurations;
-using Persistence.DataAccess.Entities;
 
 namespace Persistence.DataAccess;
 
