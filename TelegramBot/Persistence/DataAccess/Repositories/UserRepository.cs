@@ -3,7 +3,8 @@ using Domain.Entities;
 
 namespace Persistence.DataAccess.Repositories;
 
-public class UserRepository(AppDbContext context) : AbstractRepository<UserEntity>(context), IUserRepository
+public class UserRepository(AppDbContext context) : AbstractRepository<UserEntity>(context), 
+    IUserRepository
 {
     public async Task<bool> PatchUsernameAsync(int userId, string newUsername)
     {
