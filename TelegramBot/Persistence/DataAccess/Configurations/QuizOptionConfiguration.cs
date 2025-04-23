@@ -22,5 +22,8 @@ public class QuizOptionConfiguration : IEntityTypeConfiguration<QuizOptionEntity
             .WithMany(q => q.QuizOptions)
             .HasForeignKey(qo => qo.QuestionId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(qo => qo.IsDeleted)
+            .HasDefaultValue(false);
     }
 }

@@ -7,4 +7,5 @@ public class QuizOptionEntity
     public QuizQuestionEntity QuizQuestion { get; set; }
     public string Text { get; set; }
     public bool IsCorrect { get; set; }
+    public bool IsDeleted { get; set; }
 }

@@ -23,6 +23,9 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasIndex(u => u.Email)
             .IsUnique();
         
+        builder.HasIndex(u => u.Phone)
+            .IsUnique();
+        
         builder.Property(u => u.IsDeleted)
             .HasDefaultValue(false);
     }

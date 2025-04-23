@@ -19,5 +19,8 @@ public class ModuleConfiguration : IEntityTypeConfiguration<ModuleEntity>
             .WithMany(c => c.Modules)
             .HasForeignKey(m => m.CourseId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(u => u.IsDeleted)
+            .HasDefaultValue(false);
     }
 }

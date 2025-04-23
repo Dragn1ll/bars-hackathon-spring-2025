@@ -24,5 +24,11 @@ public class LessonConfiguration : IEntityTypeConfiguration<LessonEntity>
             .WithMany(m => m.Lessons)
             .HasForeignKey(l => l.ModuleId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(с => с.IsDeleted)
+            .HasDefaultValue(false);
+        
+        builder.Property(l => l.LessonType)
+            .HasConversion<int>();
     }
 }

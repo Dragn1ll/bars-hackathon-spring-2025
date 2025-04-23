@@ -15,5 +15,8 @@ public class CourseConfiguration : IEntityTypeConfiguration<CourseEntity>
         builder.Property(c => c.Title)
             .IsRequired()
             .HasMaxLength(255);
+        
+        builder.Property(с => с.IsDeleted)
+            .HasDefaultValue(false);
     }
 }
