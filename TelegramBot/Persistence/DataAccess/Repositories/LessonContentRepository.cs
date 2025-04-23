@@ -3,7 +3,8 @@ using Domain.Entities;
 
 namespace Persistence.DataAccess.Repositories;
 
-public class LessonContentRepository(AppDbContext context) : AbstractRepository<LessonContentEntity>(context),
+public class LessonContentRepository(AppDbContext context) : 
+    AbstractRepository<LessonContentEntity>(context),
     ILessonContentRepository
 {
     public async Task<IEnumerable<LessonContentEntity?>> GetAllLessonContentsAsync()

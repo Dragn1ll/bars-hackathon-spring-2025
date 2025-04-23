@@ -3,7 +3,8 @@ using Domain.Entities;
 
 namespace Persistence.DataAccess.Repositories;
 
-public class ModuleRepository(AppDbContext context) : AbstractRepository<ModuleEntity>(context), 
+public class ModuleRepository(AppDbContext context) : 
+    AbstractRepository<ModuleEntity>(context), 
     IModuleRepository
 {
     public async Task<IEnumerable<ModuleEntity?>> GetAllModulesAsync()

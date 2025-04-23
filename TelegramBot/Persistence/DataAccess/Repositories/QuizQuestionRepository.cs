@@ -3,7 +3,8 @@ using Domain.Entities;
 
 namespace Persistence.DataAccess.Repositories;
 
-public class QuizQuestionRepository(AppDbContext context) : AbstractRepository<QuizQuestionEntity>(context), 
+public class QuizQuestionRepository(AppDbContext context) : 
+    AbstractRepository<QuizQuestionEntity>(context), 
     IQuizQuestionRepository
 {
     public async Task<IEnumerable<QuizQuestionEntity?>> GetAllQuizQuestionsAsync()

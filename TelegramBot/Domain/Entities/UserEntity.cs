@@ -12,4 +12,5 @@ public class UserEntity
     public DateTime? JoinDate { get; set; }
     public DateTime? LastLogin { get; set; }
     public bool IsDeleted { get; set; }
+    public ICollection<UserCompletedLessonEntity> CompletedLessons { get; set; }
 }

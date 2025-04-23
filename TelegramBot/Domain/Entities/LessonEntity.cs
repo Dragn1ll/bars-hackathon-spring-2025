@@ -11,4 +11,5 @@ public class LessonEntity
     public bool IsDeleted { get; set; }
     public ICollection<LessonContentEntity> LessonContents { get; set; }
     public ICollection<QuizQuestionEntity> QuizQuestions { get; set; }
+    public ICollection<UserCompletedLessonEntity> CompletedByUsers { get; set; }
 }
