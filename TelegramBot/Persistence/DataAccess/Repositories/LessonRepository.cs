@@ -28,11 +28,6 @@ public class LessonRepository(AppDbContext context) :
             .Contains(title, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public async Task<IEnumerable<LessonEntity?>> GetLessonsByLessonTypeIdAsync(int lessonTypeId)
-    {
-        return await GetAllByFilterAsync(e => e.LessonTypeId == lessonTypeId);
-    }
-
     public async Task<LessonEntity?> GetLessonByIdAsync(int lessonId)
     {
         return await GetByFilterAsync(e => e.Id == lessonId);

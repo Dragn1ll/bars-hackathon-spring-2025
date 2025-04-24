@@ -16,10 +16,6 @@ public class LessonConfiguration : IEntityTypeConfiguration<LessonEntity>
             .IsRequired()
             .HasMaxLength(255);
         
-        builder.Property(l => l.LessonType)
-            .IsRequired()
-            .HasMaxLength(20);
-        
         builder.HasOne(l => l.Module)
             .WithMany(m => m.Lessons)
             .HasForeignKey(l => l.ModuleId)
@@ -27,8 +23,5 @@ public class LessonConfiguration : IEntityTypeConfiguration<LessonEntity>
         
         builder.Property(с => с.IsDeleted)
             .HasDefaultValue(false);
-        
-        builder.Property(l => l.LessonType)
-            .HasConversion<int>();
     }
 }
