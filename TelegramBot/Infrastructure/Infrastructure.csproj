@@ -10,4 +10,8 @@
       <PackageReference Include="Minio" Version="6.0.4" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Application\Application.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,12 +1,14 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using System.Text;
+﻿using System.Text;
+using Application.Abstractions.Services;
+using Application.Utils;
+using Domain.Models.Enums;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
 
 namespace Infrastructure.Storage;
 
-public class MinioService
+public class MinioService : IMinioServices
 {
     private readonly IMinioClient _minioClient;
     private readonly MinioOptions _minioOptions;
@@ -21,7 +23,7 @@ public class MinioService
             .Build();
     }
     
-    public async Task CreateDocument(Guid documentId)
+    public async Task<Result> CreateDocument(Guid documentId)
     {
         try
         {
@@ -46,7 +48,7 @@ public class MinioService
         }
         catch (Exception exception)
         {
-            return Result.Failure(new JSType.Error(ErrorType.ServerError, exception.Message));
+            return Result.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
@@ -70,7 +72,7 @@ public class MinioService
         }
         catch (Exception exception)
         {
-            return Result<string>.Failure(new JSType.Error(ErrorType.ServerError, exception.Message));
+            return Result<string>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
@@ -92,7 +94,7 @@ public class MinioService
         }
         catch (Exception exception)
         {
-            return Result.Failure(new JSType.Error(ErrorType.ServerError, exception.Message));
+            return Result.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
     
@@ -110,7 +112,7 @@ public class MinioService
         }
         catch (Exception exception)
         {
-            return Result.Failure(new JSType.Error(ErrorType.ServerError, exception.Message));
+            return Result.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
     
@@ -132,7 +134,7 @@ public class MinioService
         }
         catch (Exception exception)
         {
-            return Result<bool>.Failure(new JSType.Error(ErrorType.ServerError, exception.Message));
+            return Result<bool>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 }
