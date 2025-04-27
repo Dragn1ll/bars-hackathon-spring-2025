@@ -10,7 +10,7 @@ public class QuizOptionConfiguration : IEntityTypeConfiguration<QuizOptionEntity
     {
         builder.ToTable("quiz_options");
         
-        builder.HasKey(qo => qo.Id);
+        builder.HasKey(qo => qo.OptionId);
         
         builder.Property(qo => qo.Text)
             .IsRequired();

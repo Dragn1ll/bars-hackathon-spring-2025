@@ -10,9 +10,9 @@ public class QuizQuestionConfiguration : IEntityTypeConfiguration<QuizQuestionEn
     {
         builder.ToTable("quiz_questions");
         
-        builder.HasKey(q => q.Id);
+        builder.HasKey(q => q.QuestionId);
         
-        builder.Property(q => q.Question)
+        builder.Property(q => q.QuestionText)
             .IsRequired();
         
         builder.HasOne(q => q.Lesson)

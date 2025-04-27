@@ -7,4 +7,5 @@ public record CreateLessonContentDto(
     int LessonId,
     string FileName,
     IFormFile File,
-    LessonContentType ContentType);
+    LessonContentType ContentType
+    );

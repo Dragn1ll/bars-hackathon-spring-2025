@@ -2,8 +2,8 @@ namespace Domain.Entities;
 
 public class ModuleEntity
 {
-    public int ModuleId { get; set; }
-    public int CourseId { get; set; }
+    public Guid ModuleId { get; set; }
+    public Guid CourseId { get; set; }
     public CourseEntity Course { get; set; }
     public string Title { get; set; }
     public bool IsDeleted { get; set; }
