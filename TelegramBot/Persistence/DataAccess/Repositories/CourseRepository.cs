@@ -49,11 +49,11 @@ public class CourseRepository(AppDbContext context) :
         return await DeleteAsync(e => e.CourseId == courseId);
     }
 
-    public async Task<CourseEntity?> GetCourseWithModules(int courseId)
+    public async Task<CourseEntity?> GetCourseWithModules(Guid courseId)
     {
-        return context.Set<CourseEntity>()
+        return await context.Set<CourseEntity>()
             .AsNoTracking()
             .Include(course => course.Modules)
-            .FirstOrDefault(course => course.CourseId == courseId);
+            .FirstOrDefaultAsync(course => course.CourseId == courseId);
     }
 }

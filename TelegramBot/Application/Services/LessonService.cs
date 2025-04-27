@@ -108,12 +108,13 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
                 return Result<LessonDto>.Failure(
                     new Error(ErrorType.NotFound, "Lesson already not exists"));
             
-            return Result<LessonDto>.Success(mapper.Map<LessonEntity, LessonDto>(await unitOfWork.Lessons
-                .GetByFilterAsync(lesson => lesson.LessonId == lessonId)));
+            return Result<LessonDto>.Success(
+                mapper.Map<LessonEntity, LessonDto>(await unitOfWork.Lessons
+                    .GetByFilterAsync(lesson => lesson.LessonId == lessonId) ?? new LessonEntity()));
         }
         catch
         {
-            return Result<LessonDto>.Failure(new Error(ErrorType.ServerError, "Can't get lesson"));>
+            return Result<LessonDto>.Failure(new Error(ErrorType.ServerError, "Can't get lesson"));
         }
     }
 

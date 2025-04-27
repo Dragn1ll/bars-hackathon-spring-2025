@@ -51,9 +51,9 @@ public class ModuleRepository(AppDbContext context) :
 
     public async Task<ModuleEntity?> GetModuleWithLessons(Guid moduleId)
     {
-        return context.Set<ModuleEntity>()
+        return await context.Set<ModuleEntity>()
             .AsNoTracking()
             .Include(e => e.Lessons)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync(module => module.ModuleId == moduleId);
     }
 }

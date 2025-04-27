@@ -4,5 +4,5 @@ namespace Domain.Abstractions.Repositories;
 
 public interface ICourseRepository : IRepository<CourseEntity>
 {
-    Task<CourseEntity?> GetCourseWithModules(int courseId);
+    Task<CourseEntity?> GetCourseWithModules(Guid courseId);
 }
