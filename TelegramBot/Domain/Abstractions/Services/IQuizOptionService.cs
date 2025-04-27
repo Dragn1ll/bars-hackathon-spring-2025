@@ -1,10 +1,11 @@
 using Domain.Entities;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface IQuizOptionService
 {
-    Task<QuizOptionEntity> AddQuizOption(QuizOptionEntity quizOption);
-    Task<bool> DeleteQuizOption(QuizOptionEntity quizOption);
-    Task<List<QuizOptionEntity>> GetQuizOptions(int quizId);
+    Task<Result<QuizOptionEntity>> AddQuizOption(QuizOptionEntity quizOption);
+    Task<Result> DeleteQuizOption(QuizOptionEntity quizOption);
+    Task<Result<List<QuizOptionEntity>>> GetQuizOptions(int quizId);
 }
