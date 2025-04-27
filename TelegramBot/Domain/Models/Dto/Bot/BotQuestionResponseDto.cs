@@ -1,7 +1,7 @@
 ﻿namespace Domain.Models.Dto.Bot;
 
-public record QuestionDtoResponse(
+public record BotQuestionResponseDto(
     int QuestionId,
     string QuestionText,
-    List<AnswerDtoResponse> Answers
+    List<BotAnswerResponseDto> Answers
     );
