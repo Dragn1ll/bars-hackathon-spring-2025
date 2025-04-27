@@ -17,8 +17,5 @@ public class UserCompletedLessonConfiguration : IEntityTypeConfiguration<UserCom
         builder.HasOne(ul => ul.Lesson)
             .WithMany(l => l.CompletedByUsers)
             .HasForeignKey(ul => ul.LessonId);
-        
-        builder.Property(ul => ul.Score)
-            .HasPrecision(5, 2);
     }
 }

@@ -10,7 +10,7 @@ public class LessonContentConfiguration : IEntityTypeConfiguration<LessonContent
     {
         builder.ToTable("lesson_contents");
         
-        builder.HasKey(lc => lc.Id);
+        builder.HasKey(lc => lc.LessonContentId);
         
         builder.HasOne(lc => lc.Lesson)
             .WithMany(l => l.LessonContents)

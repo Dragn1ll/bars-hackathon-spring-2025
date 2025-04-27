@@ -17,27 +17,22 @@ public class UserCompletedLessonRepository(AppDbContext context) :
         return await GetAllByFilterAsync(e => e.UserId == userId);
     }
 
-    public async Task<IEnumerable<UserCompletedLessonEntity?>> GetUserCompletedLessonsByLessonIdAsync(int lessonId)
+    public async Task<IEnumerable<UserCompletedLessonEntity?>> GetUserCompletedLessonsByLessonIdAsync(Guid lessonId)
     {
         return await GetAllByFilterAsync(e => e.LessonId == lessonId);
     }
 
-    public async Task<UserCompletedLessonEntity?> GetUserCompletedLessonByIdAsync(int completeId)
+    public async Task<UserCompletedLessonEntity?> GetUserCompletedLessonByIdAsync(Guid completeId)
     {
         return await GetByFilterAsync(e => e.Id == completeId);
     }
 
-    public async Task<bool> PatchUserCompletedLessonScoreAsync(int completeId, double newScore)
-    {
-        return await PatchAsync(completeId, e => e.Score = newScore);
-    }
-
-    public async Task<bool> PatchUserCompletedLessonStatusAsync(int completeId, bool newStatus)
+    public async Task<bool> PatchUserCompletedLessonStatusAsync(Guid completeId, bool newStatus)
     {
         return await PatchAsync(completeId, e => e.IsSuccessful = newStatus);
     }
 
-    public async Task<bool> DeleteUserCompletedLessonAsync(int completeId)
+    public async Task<bool> DeleteUserCompletedLessonAsync(Guid completeId)
     {
         return await DeleteAsync(e => e.Id == completeId);
     }

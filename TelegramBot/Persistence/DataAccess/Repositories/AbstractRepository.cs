@@ -29,7 +29,7 @@ public abstract class AbstractRepository<TEntity>(AppDbContext context) : IRepos
         return await context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> PatchAsync(int id, Action<TEntity> patch)
+    public async Task<bool> PatchAsync(Guid id, Action<TEntity> patch)
     {
         try
         {
