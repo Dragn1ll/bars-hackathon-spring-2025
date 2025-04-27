@@ -62,7 +62,7 @@ public class MinioService : IFileStorageService
                 return Result<Stream>.Failure(existResult.Error);
             }
 
-            using var memoryStream = new MemoryStream();
+            var memoryStream = new MemoryStream();
             await _minioClient.GetObjectAsync(
                 new GetObjectArgs()
                     .WithBucket(_minioOptions.BucketName)
