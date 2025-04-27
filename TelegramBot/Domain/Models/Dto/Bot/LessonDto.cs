@@ -1,4 +1,4 @@
-﻿namespace Domain.Models.Dto;
+﻿namespace Domain.Models.Dto.Bot;
 
 public record LessonDto(
     string Title,
