@@ -30,7 +30,7 @@ public class LessonRepository(AppDbContext context) :
 
     public async Task<LessonEntity?> GetLessonByIdAsync(int lessonId)
     {
-        return await GetByFilterAsync(e => e.Id == lessonId);
+        return await GetByFilterAsync(e => e.LessonId == lessonId);
     }
 
     public async Task<bool> PatchLessonTitleAsync(int lessonId, string newTitle)

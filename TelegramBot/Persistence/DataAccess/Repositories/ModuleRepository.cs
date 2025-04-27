@@ -30,7 +30,7 @@ public class ModuleRepository(AppDbContext context) :
 
     public async Task<ModuleEntity?> GetModuleByIdAsync(int moduleId)
     {
-        return await GetByFilterAsync(e => e.Id == moduleId);
+        return await GetByFilterAsync(e => e.ModuleId == moduleId);
     }
 
     public async Task<bool> PatchTitleAsync(int moduleId, string newTitle)
@@ -45,6 +45,6 @@ public class ModuleRepository(AppDbContext context) :
 
     public async Task<bool> DeleteModuleAsync(int moduleId)
     {
-        return await DeleteAsync(e => e.Id == moduleId);
+        return await DeleteAsync(e => e.ModuleId == moduleId);
     }
 }

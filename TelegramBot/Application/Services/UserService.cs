@@ -7,23 +7,19 @@ using Domain.Utils;
 
 namespace Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork): IUserService
+public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
 {
     public async Task<Result<UserEntity>> RegisterAsync(RegisterUserDto registerUserDto)
     {
         try
         {
-            if (await unitOfWork.Users.GetByFilterAsync(u => u.Id 
-                                                             == registerUserDto.UserId)
-                != null)
+            if (await unitOfWork.Users.GetByFilterAsync(u => u.UserId 
+                                                              == registerUserDto.UserId)
+                 != null)
                 return Result<UserEntity>.Failure(
                     new Error(ErrorType.BadRequest, "User already exists"));
 
-            var user = new UserEntity
-            {
-                Id = registerUserDto.UserId,
-                Phone = registerUserDto.PhoneNumber
-            };
+            var user = mapper.Map<RegisterUserDto, UserEntity>(registerUserDto);
             
             return await unitOfWork.Users.AddAsync(user) 
                 ? Result<UserEntity>.Success(user)
@@ -40,7 +36,7 @@ public class UserService(IUnitOfWork unitOfWork): IUserService
     {
         try
         {
-            return await unitOfWork.Users.GetByFilterAsync(u => u.Id == userId) != null 
+            return await unitOfWork.Users.GetByFilterAsync(u => u.UserId == userId) != null 
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.NotFound, "User does not exist"));
         }
@@ -54,10 +50,10 @@ public class UserService(IUnitOfWork unitOfWork): IUserService
     {
         try
         {
-            if (await unitOfWork.Users.GetByFilterAsync(u => u.Id == userId) == null)
+            if (await unitOfWork.Users.GetByFilterAsync(u => u.UserId == userId) == null)
                 return Result.Failure(new Error(ErrorType.NotFound, "User does not exist"));
             
-            return await unitOfWork.Users.DeleteAsync(u => u.Id == userId)
+            return await unitOfWork.Users.DeleteAsync(u => u.UserId == userId)
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't unregister user"));
         }

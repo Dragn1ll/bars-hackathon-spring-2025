@@ -19,7 +19,7 @@ public class UserRepository(AppDbContext context) :
 
     public async Task<bool> PatchUserPhoneAsync(int userId, string newPhone)
     {
-        return await PatchAsync(userId, e => e.Phone = newPhone);
+        return await PatchAsync(userId, e => e.PhoneNumber = newPhone);
     }
 
     public async Task<bool> PatchUserDeleteStatusAsync(int userId)
@@ -34,7 +34,7 @@ public class UserRepository(AppDbContext context) :
 
     public async Task<UserEntity?> GetUserByIdAsync(int userId)
     {
-        return await GetByFilterAsync(e => e.Id == userId);
+        return await GetByFilterAsync(e => e.UserId == userId);
     }
 
     public async Task<UserEntity?> GetUserByUsernameAsync(string username)
@@ -49,7 +49,7 @@ public class UserRepository(AppDbContext context) :
 
     public async Task<UserEntity?> GetUserByPhoneAsync(string phone)
     {
-        return await GetByFilterAsync(e => e.Phone == phone);
+        return await GetByFilterAsync(e => e.PhoneNumber == phone);
     }
 
     public async Task<IEnumerable<UserEntity?>> GetDeletedUsersAsync()
@@ -59,7 +59,7 @@ public class UserRepository(AppDbContext context) :
 
     public async Task<bool> DeleteUserByIdAsync(int userId)
     {
-        return await DeleteAsync(e => e.Id == userId);
+        return await DeleteAsync(e => e.UserId == userId);
     }
 
     public Task<bool> DeleteUserByUsernameAsync(string username)
@@ -74,6 +74,6 @@ public class UserRepository(AppDbContext context) :
 
     public Task<bool> DeleteUserByPhoneAsync(string phone)
     {
-        return DeleteAsync(e => e.Phone == phone);
+        return DeleteAsync(e => e.PhoneNumber == phone);
     }
 }
