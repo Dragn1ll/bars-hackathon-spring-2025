@@ -4,6 +4,4 @@ namespace Domain.Models.Dto.Admin;
 
 public record CreateLessonDto(
     int ModuleId,
-    string Title,
-    LessonType Type
-    );
+    string Title);

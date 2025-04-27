@@ -1,7 +1,7 @@
 using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
 using Domain.Entities;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Bot;
 using Domain.Utils;
 
 namespace Application.Services;

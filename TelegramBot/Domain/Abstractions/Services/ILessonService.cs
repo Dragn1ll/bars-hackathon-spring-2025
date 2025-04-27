@@ -1,4 +1,6 @@
 using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Models.Dto.General;
 using Domain.Models.Enums;
 using Domain.Utils;
 
@@ -6,9 +8,8 @@ namespace Domain.Abstractions.Services;
 
 public interface ILessonService
 {
-    Task<Result<LessonEntity>> CreateLesson(LessonEntity lesson);
-    Task<Result<LessonEntity>> UpdateLesson(LessonEntity lesson);
+    Task<Result<LessonDto>> CreateLesson(CreateLessonDto lesson);
+    Task<Result<LessonDto>> UpdateLesson(LessonDto lesson);
     Task<Result> DeleteLesson(int lessonId);
-    Task<Result<List<LessonEntity>>> GetAllLessons(int moduleId);
-    Task<Result<LessonEntity>> GetLessonWithContentAndQuizzes(int lessonId);
+    Task<Result<List<LessonDto>>> GetAllLessons(int moduleId);
 }

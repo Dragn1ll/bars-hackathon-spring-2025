@@ -1,12 +1,14 @@
 using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Models.Dto.General;
 using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface IModuleService
 {
-    Task<Result<ModuleEntity>> CreateModule(ModuleEntity moduleEntity);
-    Task<Result<ModuleEntity>> UpdateModule(ModuleEntity moduleEntity);
+    Task<Result<ModuleDto>> CreateModule(CreateModuleDto module);
+    Task<Result<ModuleDto>> UpdateModule(ModuleDto module);
     Task<Result> DeleteModule(int moduleId);
-    Task<Result<List<ModuleEntity>>> GetModules(int courseId);
+    Task<Result<List<ModuleDto>>> GetModules(int courseId);
 }

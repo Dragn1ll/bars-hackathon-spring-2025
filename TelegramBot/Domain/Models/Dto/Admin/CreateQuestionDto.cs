@@ -1,6 +1,6 @@
 namespace Domain.Models.Dto.Admin;
 
-public record AddQuestion(
+public record CreateQuestionDto(
     int LessonId,
     string Question,
     List<string> Answers,
