@@ -8,7 +8,7 @@ namespace Domain.Abstractions.Services;
 
 public interface ICourseService
 {
-    Task<Result<CourseDto>> CreateCourse(CreateCourseDto course);
+    Task<Result<CourseDto>> CreateCourse(CreateCourseDto createCourse);
     Task<Result<CourseDto>> ChangeCourse(CourseDto course);
     Task<Result> DeleteCourse(int courseId);
     Task<Result<List<CourseDto>>> GetAllCourses();

@@ -2,7 +2,7 @@ namespace Domain.Entities;
 
 public class LessonEntity
 {
-    public int Id { get; set; }
+    public int LessonId { get; set; }
     public int ModuleId { get; set; }
     public ModuleEntity Module { get; set; }
     public string Title { get; set; }
