@@ -1,11 +1,12 @@
 using Domain.Entities;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface ICourseService
 {
-    Task<CourseEntity> CreateCourse(CourseEntity course);
-    Task<CourseEntity> ChangeCourse(CourseEntity course);
-    Task<bool> DeleteCourse(int courseId);
-    Task<List<CourseEntity>> GetAllCourses();
+    Task<Result<CourseEntity>> CreateCourse(CourseEntity course);
+    Task<Result<CourseEntity>> ChangeCourse(CourseEntity course);
+    Task<Result> DeleteCourse(int courseId);
+    Task<Result<List<CourseEntity>>> GetAllCourses();
 }

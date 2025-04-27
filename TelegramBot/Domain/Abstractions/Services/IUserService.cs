@@ -1,10 +1,11 @@
 using Domain.Entities;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface IUserService
 {
-    Task<UserEntity> RegisterAsync(UserEntity user);
-    Task<bool> LoginAsync(long chatId);
-    Task<bool> UnregisterAsync(long chatId);
+    Task<Result<UserEntity>> RegisterAsync(UserEntity user);
+    Task<Result> LoginAsync(long chatId);
+    Task<Result> UnregisterAsync(long chatId);
 }

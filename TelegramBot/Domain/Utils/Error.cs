@@ -1,6 +1,6 @@
 using Domain.Models.Enums;
 
-namespace Application.Utils;
+namespace Domain.Utils;
 
 public class Error(ErrorType errorType, string errorMessage)
 {

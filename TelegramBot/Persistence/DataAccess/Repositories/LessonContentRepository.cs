@@ -26,24 +26,4 @@ public class LessonContentRepository(AppDbContext context) :
     {
         return await GetAllByFilterAsync(e => e.LessonContentTypeId == typeId);
     }
-
-    public async Task<LessonContentEntity?> GetLessonContentsByIdAsync(int contentId)
-    {
-        return await GetByFilterAsync(e => e.Id == contentId);
-    }
-
-    public async Task<bool> PatchLessonContentAsync(int contentId, string newContent)
-    {
-        return await PatchAsync(contentId, e => e.Content = newContent);
-    }
-
-    public async Task<bool> PatchDeleteStatusAsync(int contentId)
-    {
-        return await PatchAsync(contentId, e => e.IsDeleted = true);
-    }
-
-    public async Task<bool> DeleteLessonContentAsync(int contentId)
-    {
-        return await DeleteAsync(e => e.Id == contentId);
-    }
 }

@@ -1,4 +1,4 @@
-namespace Application.Utils;
+namespace Domain.Utils;
 
 public class Result(bool isSuccess, Error? error = null)
 {
