@@ -1,5 +1,5 @@
 ﻿namespace Domain.Models.Dto.General;
 
 public record LessonDto(
-    int LessonId,
+    Guid LessonId,
     string Title);

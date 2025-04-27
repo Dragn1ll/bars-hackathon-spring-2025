@@ -1,7 +1,7 @@
 namespace Domain.Models.Dto.Admin;
 
 public record AdminQuestionOptionResponseDto(
-    int QuestionOptionId,
+    Guid QuestionOptionId,
     string Answer,
     bool IsCorrect
     );

@@ -26,8 +26,8 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpDelete]
-    [Route("/delete")]
-    public async Task<IActionResult> DeleteModule(int moduleId)
+    [Route("/delete/{moduleId:guid}")]
+    public async Task<IActionResult> DeleteModule(Guid moduleId)
     {
         var module = await moduleService.DeleteModule(moduleId);
         return ResultRouter.GetActionResult(module);
@@ -35,9 +35,17 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     
     [HttpGet]
     [Route("/all/{courseId:int}")]
-    public async Task<IActionResult> GetModules(int courseId)
+    public async Task<IActionResult> GetModules(Guid courseId)
     {
         var modules = await moduleService.GetModules(courseId);
+        return ResultRouter.GetActionResult(modules);
+    }
+
+    [HttpGet]
+    [Route("/{moduleId:guid}")]
+    public async Task<IActionResult> GetModule(Guid moduleId)
+    {
+        var modules = await moduleService.GetModuleWithLessons(moduleId);
         return ResultRouter.GetActionResult(modules);
     }
 }

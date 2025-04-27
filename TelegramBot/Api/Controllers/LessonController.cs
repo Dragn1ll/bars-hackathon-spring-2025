@@ -27,26 +27,34 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpDelete]
-    [Route("/delete")]
-    public async Task<IActionResult> DeleteLesson(int lessonId)
+    [Route("/delete/{lessonId:guid}")]
+    public async Task<IActionResult> DeleteLesson(Guid lessonId)
     {
         var result = await lessonService.DeleteLesson(lessonId);
         return ResultRouter.GetActionResult(result);
     }
 
     [HttpGet]
-    [Route("/all/{moduleId:int}")]
-    public async Task<IActionResult> GetAllLessons(int moduleId)
+    [Route("/all/{moduleId:guid}")]
+    public async Task<IActionResult> GetAllLessons(Guid moduleId)
     {
         var result = await lessonService.GetAllLessons(moduleId);
         return ResultRouter.GetActionResult(result);
     }
 
     [HttpGet]
-    [Route("/all/files/{lessonId:int}")]
-    public async Task<IActionResult> GetAllLessonFiles(int lessonId)
+    [Route("/all/files/{lessonId:guid}")]
+    public async Task<IActionResult> GetAllLessonFiles(Guid lessonId)
     {
-        var result = await lessonService.GetAllLessonFiles(lessonId);
-        return ResultRouter.GetActionResult(result);
+        var files = await lessonService.GetAllLessonFiles(lessonId);
+        return ResultRouter.GetActionResult(files);
+    }
+
+    [HttpGet]
+    [Route("/{lessonId:guid}")]
+    public async Task<IActionResult> GetLesson(Guid lessonId)
+    {
+        var lesson = await lessonService.GetLesson(lessonId);
+        return ResultRouter.GetActionResult(lesson);
     }
 }

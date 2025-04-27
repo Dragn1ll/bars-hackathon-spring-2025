@@ -47,7 +47,7 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
         }
     }
 
-    public async Task<Result> DeleteModule(int moduleId)
+    public async Task<Result> DeleteModule(Guid moduleId)
     {
         try
         {
@@ -65,7 +65,7 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
         }
     }
 
-    public async Task<Result<List<ModuleDto>>> GetModules(int courseId)
+    public async Task<Result<List<ModuleDto>>> GetModules(Guid courseId)
     {
         try
         {
@@ -77,6 +77,24 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
         catch (Exception exception)
         {
             return Result<List<ModuleDto>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<ModuleDto>> GetModuleWithLessons(Guid moduleId)
+    {
+        try
+        {
+            if (!await ThereIsAModule(m => m.ModuleId == moduleId))
+                return Result<ModuleDto>.Failure(
+                    new Error(ErrorType.NotFound, "Module already not exists"));
+
+            return Result<ModuleDto>.Success(
+                mapper.Map<ModuleEntity, ModuleDto>(await unitOfWork.Modules
+                    .GetModuleWithLessons(moduleId) ?? new ModuleEntity()));
+        }
+        catch
+        {
+            return Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, "Can't get module"));
         }
     }
 

@@ -27,8 +27,8 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
 
     [HttpDelete]
-    [Route("/delete/{courseId:int}")]
-    public async Task<IActionResult> DeleteCourse(int courseId)
+    [Route("/delete/{courseId:guid}")]
+    public async Task<IActionResult> DeleteCourse(Guid courseId)
     {
         var result = await courseService.DeleteCourse(courseId);
         return ResultRouter.GetActionResult(result);
@@ -39,6 +39,14 @@ public class CourseController(ICourseService courseService): ControllerBase
     public async Task<IActionResult> GetCourses()
     {
         var result = await courseService.GetAllCourses();
+        return ResultRouter.GetActionResult(result);
+    }
+
+    [HttpGet]
+    [Route("/{courseId:guid}")]
+    public async Task<IActionResult> GetCourse(Guid courseId)
+    {
+        var result = await courseService.GetCourseWithModules(courseId);
         return ResultRouter.GetActionResult(result);
     }
 }

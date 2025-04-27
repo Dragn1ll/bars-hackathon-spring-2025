@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DataAccess.Repositories;
 
@@ -46,5 +47,13 @@ public class ModuleRepository(AppDbContext context) :
     public async Task<bool> DeleteModuleAsync(int moduleId)
     {
         return await DeleteAsync(e => e.ModuleId == moduleId);
+    }
+
+    public async Task<ModuleEntity?> GetModuleWithLessons(Guid moduleId)
+    {
+        return context.Set<ModuleEntity>()
+            .AsNoTracking()
+            .Include(e => e.Lessons)
+            .FirstOrDefault();
     }
 }

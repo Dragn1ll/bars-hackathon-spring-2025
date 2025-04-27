@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DataAccess.Repositories;
 
@@ -46,5 +47,13 @@ public class CourseRepository(AppDbContext context) :
     public async Task<bool> DeleteCourseAsync(int courseId)
     {
         return await DeleteAsync(e => e.CourseId == courseId);
+    }
+
+    public async Task<CourseEntity?> GetCourseWithModules(int courseId)
+    {
+        return context.Set<CourseEntity>()
+            .AsNoTracking()
+            .Include(course => course.Modules)
+            .FirstOrDefault(course => course.CourseId == courseId);
     }
 }
