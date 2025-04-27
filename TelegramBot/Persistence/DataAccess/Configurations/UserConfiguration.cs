@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,9 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         
         builder.HasIndex(u => u.UserId)
             .IsUnique();
+
+        builder.Property(u => u.Role)
+            .HasConversion<string>();
         
         builder.Property(u => u.Username)
             .IsRequired()

@@ -2,13 +2,12 @@ namespace Domain.Entities;
 
 public class UserCompletedLessonEntity
 {
-    public long Id { get; set; }
-    public int UserId { get; set; }
+    public Guid Id { get; set; }
+    public long UserId { get; set; }
     public UserEntity User { get; set; }
     
-    public int LessonId { get; set; }
+    public Guid LessonId { get; set; }
     public LessonEntity Lesson { get; set; }
     
     public bool IsSuccessful { get; set; }
-    public double? Score { get; set; }
 }

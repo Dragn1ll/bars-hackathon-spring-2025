@@ -1,4 +1,3 @@
-using Domain.Entities;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.Bot;
 using Domain.Utils;

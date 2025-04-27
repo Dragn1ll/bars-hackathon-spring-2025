@@ -17,7 +17,7 @@ public class LessonRepository(AppDbContext context) :
         return await GetAllByFilterAsync(e => e.IsDeleted == true);
     }
 
-    public async Task<IEnumerable<LessonEntity?>> GetLessonsByModuleIdAsync(int moduleId)
+    public async Task<IEnumerable<LessonEntity?>> GetLessonsByModuleIdAsync(Guid moduleId)
     {
         return await GetAllByFilterAsync(e => e.ModuleId == moduleId);
     }
@@ -28,22 +28,22 @@ public class LessonRepository(AppDbContext context) :
             .Contains(title, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public async Task<LessonEntity?> GetLessonByIdAsync(int lessonId)
+    public async Task<LessonEntity?> GetLessonByIdAsync(Guid lessonId)
     {
         return await GetByFilterAsync(e => e.LessonId == lessonId);
     }
 
-    public async Task<bool> PatchLessonTitleAsync(int lessonId, string newTitle)
+    public async Task<bool> PatchLessonTitleAsync(Guid lessonId, string newTitle)
     {
         return await PatchAsync(lessonId, e => e.Title = newTitle);
     }
 
-    public async Task<bool> PatchDeleteStatusAsync(int lessonId)
+    public async Task<bool> PatchDeleteStatusAsync(Guid lessonId)
     {
         return await PatchAsync(lessonId, e => e.IsDeleted = !e.IsDeleted);
     }
 
-    public async Task<bool> DeleteLessonAsync(int moduleId)
+    public async Task<bool> DeleteLessonAsync(Guid moduleId)
     {
         return await DeleteAsync(e => e.ModuleId == moduleId);
     }

@@ -1,3 +1,5 @@
+using Domain.Models.Enums;
+
 namespace Domain.Entities;
 
 public class UserEntity
@@ -7,6 +9,7 @@ public class UserEntity
     public string? Name { get; set; }
     public string? Surname { get; set; }
     public string Email { get; set; }
+    public UserRole Role { get; set; }
     public string PhoneNumber { get; set; }
     public int? Age { get; set; }
     public DateTime? JoinDate { get; set; }
