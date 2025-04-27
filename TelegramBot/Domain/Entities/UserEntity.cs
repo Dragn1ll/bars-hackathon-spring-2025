@@ -2,7 +2,7 @@ namespace Domain.Entities;
 
 public class UserEntity
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public string Username { get; set; }
     public string? Name { get; set; }
     public string? Surname { get; set; }
@@ -13,4 +13,5 @@ public class UserEntity
     public DateTime? LastLogin { get; set; }
     public bool IsDeleted { get; set; }
     public ICollection<UserCompletedLessonEntity> CompletedLessons { get; set; }
+    public ICollection<UserAnsweredQuestionEntity> Answers { get; set; }
 }
