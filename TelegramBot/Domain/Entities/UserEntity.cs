@@ -13,4 +13,5 @@ public class UserEntity
     public DateTime? LastLogin { get; set; }
     public bool IsDeleted { get; set; }
     public ICollection<UserCompletedLessonEntity> CompletedLessons { get; set; }
+    public ICollection<UserAnsweredQuestionEntity> Answers { get; set; }
 }

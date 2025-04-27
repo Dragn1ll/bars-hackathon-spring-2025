@@ -8,4 +8,5 @@ public class QuizQuestionEntity
     public string Question { get; set; }
     public bool IsDeleted { get; set; }
     public ICollection<QuizOptionEntity> QuizOptions { get; set; }
+    public IEnumerable<UserAnsweredQuestionEntity>? Answers { get; set; }
 }
