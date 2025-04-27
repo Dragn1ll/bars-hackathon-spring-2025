@@ -10,7 +10,7 @@ public class ModuleConfiguration : IEntityTypeConfiguration<ModuleEntity>
     {
         builder.ToTable("modules");
         
-        builder.HasKey(m => m.Id);
+        builder.HasKey(m => m.ModuleId);
         
         builder.Property(m => m.Title)
             .IsRequired().HasMaxLength(255);

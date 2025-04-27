@@ -12,4 +12,5 @@ public interface ILessonService
     Task<Result<LessonDto>> UpdateLesson(LessonDto lesson);
     Task<Result> DeleteLesson(int lessonId);
     Task<Result<List<LessonDto>>> GetAllLessons(int moduleId);
+    Task<Result<List<Stream>>> GetAllLessonFiles(int lessonId);
 }

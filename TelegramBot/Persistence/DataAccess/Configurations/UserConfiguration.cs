@@ -10,7 +10,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         builder.ToTable("users");
         
-        builder.HasIndex(u => u.Id)
+        builder.HasIndex(u => u.UserId)
             .IsUnique();
         
         builder.Property(u => u.Username)
@@ -24,7 +24,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasIndex(u => u.Email)
             .IsUnique();
         
-        builder.HasIndex(u => u.Phone)
+        builder.HasIndex(u => u.PhoneNumber)
             .IsUnique();
         
         builder.Property(u => u.IsDeleted)

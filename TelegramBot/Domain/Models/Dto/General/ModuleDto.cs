@@ -2,5 +2,4 @@
 
 public record ModuleDto(
     int ModuleId,
-    string Title,
-    string Description);
+    string Title);

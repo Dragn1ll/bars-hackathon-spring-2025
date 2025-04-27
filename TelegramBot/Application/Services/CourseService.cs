@@ -1,0 +1,92 @@
+using System.Linq.Expressions;
+using Domain.Abstractions.Repositories;
+using Domain.Abstractions.Services;
+using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Models.Dto.General;
+using Domain.Models.Enums;
+using Domain.Utils;
+
+namespace Application.Services;
+
+public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseService
+{
+    public async Task<Result<CourseDto>> CreateCourse(CreateCourseDto createCourse)
+    {
+        try
+        {
+            if (await ThereIsACourse(c => createCourse.Title == c.Title))
+                return Result<CourseDto>.Failure(new 
+                    Error(ErrorType.BadRequest, "Course already exists"));
+            
+            var result = await unitOfWork.Courses
+                .AddAsync(mapper.Map<CreateCourseDto, CourseEntity>(createCourse));
+            return result 
+                ? Result<CourseDto>.Success(mapper.Map<CreateCourseDto, CourseDto>(createCourse)) 
+                : Result<CourseDto>.Failure(
+                    new Error(ErrorType.ServerError, "Can't register course"));
+        }
+        catch (Exception exception)
+        {
+            return Result<CourseDto>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<CourseDto>> ChangeCourse(CourseDto course)
+    {
+        try
+        {
+            if (!await ThereIsACourse(c => c.CourseId == course.CourseId))
+                return Result<CourseDto>.Failure(
+                    new Error(ErrorType.BadRequest, "Course does not exist"));
+            
+            return await unitOfWork.Courses.PatchAsync(course.CourseId, c =>
+            {
+                c.Title = course.Title;
+                c.Description = course.Description;
+            })
+                ? Result<CourseDto>.Success(mapper.Map<CourseDto, CourseDto>(course))
+                : Result<CourseDto>.Failure(new Error(ErrorType.ServerError, "Can't change course"));
+        }
+        catch (Exception exception)
+        {
+            return Result<CourseDto>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result> DeleteCourse(int courseId)
+    {
+        try
+        {
+            if (!await ThereIsACourse(c => c.CourseId == courseId))
+                return Result.Failure(new Error(ErrorType.BadRequest, "Course does not exist"));
+            
+            return await unitOfWork.Courses.DeleteAsync(c => c.CourseId == courseId)
+                ? Result.Success()
+                : Result.Failure(new Error(ErrorType.ServerError, "Can't delete course"));
+        }
+        catch (Exception exception)
+        {
+            return Result<CourseDto>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<List<CourseDto>>> GetAllCourses()
+    {
+        try
+        {
+            return Result<List<CourseDto>>.Success((await unitOfWork.Courses
+                    .GetAllByFilterAsync(c => true))
+                .Select(c => mapper.Map<CourseEntity, CourseDto>(c)).ToList());
+        }
+        catch (Exception exception)
+        {
+            return Result<List<CourseDto>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    private async Task<bool> ThereIsACourse(Expression<Func<CourseEntity, bool>> predicate)
+    {
+        return await unitOfWork.Courses.GetByFilterAsync(predicate) != null;
+    }
+}
