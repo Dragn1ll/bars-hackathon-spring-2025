@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Application.Abstractions.Services;
-using Domain.Abstractions.Services;
+﻿using Domain.Abstractions.Services;
 using Domain.Models.Enums;
 using Domain.Utils;
 using Microsoft.Extensions.Options;
