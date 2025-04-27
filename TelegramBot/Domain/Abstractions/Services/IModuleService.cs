@@ -8,6 +8,7 @@ public interface IModuleService
 {
     Task<Result<ModuleDto>> CreateModule(CreateModuleDto module);
     Task<Result<ModuleDto>> UpdateModule(ModuleDto module);
-    Task<Result> DeleteModule(int moduleId);
-    Task<Result<List<ModuleDto>>> GetModules(int courseId);
+    Task<Result> DeleteModule(Guid moduleId);
+    Task<Result<List<ModuleDto>>> GetModules(Guid courseId);
+    Task<Result<ModuleDto>> GetModuleWithLessons(Guid moduleId);
 }

@@ -1,6 +1,6 @@
 namespace Domain.Models.Dto.Admin;
 
 public record AdminLessonContentResponseDto(
-    int LessonContentId,
+    Guid LessonContentId,
     string FullFileName
     );

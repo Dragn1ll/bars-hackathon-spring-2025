@@ -1,5 +1,5 @@
 namespace Domain.Models.Dto.Bot;
 
 public record BotAnswerResponseDto(
-    int AnswerId,
+    Guid AnswerId,
     string Text);

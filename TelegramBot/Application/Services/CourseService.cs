@@ -19,10 +19,14 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
                 return Result<CourseDto>.Failure(new 
                     Error(ErrorType.BadRequest, "Course already exists"));
             
+            var courseEntity = mapper.Map<CreateCourseDto, CourseEntity>(createCourse);
+            courseEntity.CourseId = Guid.NewGuid();
+            
             var result = await unitOfWork.Courses
-                .AddAsync(mapper.Map<CreateCourseDto, CourseEntity>(createCourse));
+                .AddAsync(courseEntity);
+            
             return result 
-                ? Result<CourseDto>.Success(mapper.Map<CreateCourseDto, CourseDto>(createCourse)) 
+                ? Result<CourseDto>.Success(mapper.Map<CourseEntity, CourseDto>(courseEntity)) 
                 : Result<CourseDto>.Failure(
                     new Error(ErrorType.ServerError, "Can't register course"));
         }
@@ -54,7 +58,7 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
         }
     }
 
-    public async Task<Result> DeleteCourse(int courseId)
+    public async Task<Result> DeleteCourse(Guid courseId)
     {
         try
         {
@@ -82,6 +86,23 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
         catch (Exception exception)
         {
             return Result<List<CourseDto>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<CourseDto>> GetCourseWithModules(Guid courseId)
+    {
+        try
+        {
+            if (!await ThereIsACourse(c => c.CourseId == courseId))
+                return Result<CourseDto>.Failure(new Error(ErrorType.BadRequest, "Course does not exist"));
+            
+            return Result<CourseDto>.Success(
+                mapper.Map<CourseEntity, CourseDto>(await unitOfWork.Courses
+                    .GetCourseWithModules(courseId) ?? new CourseEntity()));
+        }
+        catch (Exception exception)
+        {
+            return Result<CourseDto>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 

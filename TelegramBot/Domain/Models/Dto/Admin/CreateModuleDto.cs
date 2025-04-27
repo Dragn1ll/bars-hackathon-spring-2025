@@ -1,6 +1,6 @@
 namespace Domain.Models.Dto.Admin;
 
 public record CreateModuleDto(
-    int CourseId,
+    Guid CourseId,
     string Title
     );

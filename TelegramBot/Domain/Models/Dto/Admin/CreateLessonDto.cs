@@ -3,5 +3,5 @@ using Domain.Models.Enums;
 namespace Domain.Models.Dto.Admin;
 
 public record CreateLessonDto(
-    int ModuleId,
+    Guid ModuleId,
     string Title);
