@@ -1,5 +1,5 @@
 namespace Domain.Models.Dto.Bot;
 
-public record AnswerDtoResponse(
+public record BotAnswerResponseDto(
     int AnswerId,
     string Text);
