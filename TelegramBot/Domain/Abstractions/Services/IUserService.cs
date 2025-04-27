@@ -1,5 +1,5 @@
 using Domain.Entities;
-using Domain.Models.Dto;
+using Domain.Models.Dto.Bot;
 using Domain.Utils;
 
 namespace Domain.Abstractions.Services;

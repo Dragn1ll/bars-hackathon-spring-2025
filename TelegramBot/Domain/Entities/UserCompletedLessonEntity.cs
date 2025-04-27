@@ -2,7 +2,7 @@ namespace Domain.Entities;
 
 public class UserCompletedLessonEntity
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     public int UserId { get; set; }
     public UserEntity User { get; set; }
     
