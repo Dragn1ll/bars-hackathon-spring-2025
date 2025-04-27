@@ -9,12 +9,12 @@ namespace TelegramBotWorkerService.UpdateHandlers;
 
 public class MessageUpdateHandler : ICustomUpdateHandler
 {
-    //private readonly ITelegramApiService? _apiService;
+    private readonly ITelegramApiService _apiService;
     private readonly Dictionary<string, Func<ITelegramBotClient, Message, CancellationToken, Task>> _messageRoutes;
     private readonly Func<ITelegramBotClient, Contact, CancellationToken, Task>? _contactHandler;
-    public MessageUpdateHandler()
+    public MessageUpdateHandler(ITelegramApiService apiService)
     {
-        //_apiService = apiService;
+        _apiService = apiService;
         _messageRoutes = typeof(MessageUpdateHandler)
             .GetMethods()
             .Where(m => m.IsDefined(typeof(CommandAttribute), false))
@@ -99,9 +99,19 @@ public class MessageUpdateHandler : ICustomUpdateHandler
     }
 
     [Command("Курсы")]
-    public async Task Unregister(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    public async Task GetCourses(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        
+        var inlineKeyboardButtons = (await _apiService.GetCourses())
+            .Select(course => new InlineKeyboardButton
+            {
+                Text = course.Title,
+                CallbackData = $"course#{course.CourseId}"
+            })
+            .ToArray();
+        ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons);
+        await botClient.SendMessage(message.Chat.Id, 
+            "Список курсов",
+            cancellationToken: cancellationToken);
     }
 
     public async Task HandleUnsupportedCommand(ITelegramBotClient botClient, Message message,

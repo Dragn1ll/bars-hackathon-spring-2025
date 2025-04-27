@@ -13,7 +13,7 @@ public class TelegramBotService: ITelegramBotService
     private static readonly UpdateType[] UpdateTypes = 
     [
         UpdateType.Message,
-        //UpdateType.CallbackQuery
+        UpdateType.CallbackQuery
     ];
     public TelegramBotService(ITelegramBotClient client, IServiceProvider keyedServiceProvider)
     {
