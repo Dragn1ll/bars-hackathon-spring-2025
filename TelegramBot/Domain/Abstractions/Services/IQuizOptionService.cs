@@ -1,10 +1,11 @@
 using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface IQuizOptionService
 {
-    Task<QuizOptionEntity> AddQuizOption(QuizOptionEntity quizOption);
-    Task<bool> DeleteQuizOption(QuizOptionEntity quizOption);
-    Task<List<QuizOptionEntity>> GetQuizOptions(int quizId);
+    Task<Result<AdminQuestionOptionResponseDto>> AddQuizOption(CreateQuestionOptionDto quizOption);
+    Task<Result> DeleteQuizOption(int quizOptionId);
 }

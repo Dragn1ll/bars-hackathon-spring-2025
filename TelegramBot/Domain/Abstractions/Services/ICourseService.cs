@@ -1,11 +1,15 @@
 using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Models.Dto.Bot;
+using Domain.Models.Dto.General;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface ICourseService
 {
-    Task<CourseEntity> CreateCourse(CourseEntity course);
-    Task<CourseEntity> ChangeCourse(CourseEntity course);
-    Task<bool> DeleteCourse(int courseId);
-    Task<List<CourseEntity>> GetAllCourses();
+    Task<Result<CourseDto>> CreateCourse(CreateCourseDto course);
+    Task<Result<CourseDto>> ChangeCourse(CourseDto course);
+    Task<Result> DeleteCourse(int courseId);
+    Task<Result<List<CourseDto>>> GetAllCourses();
 }

@@ -1,9 +1,8 @@
 using Domain.Entities;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface IUserCompletedLessonService
 {
-    Task<UserCompletedLessonEntity> AddUserCompletedLesson(UserCompletedLessonEntity userCompletedLesson);
-    Task<bool> DeleteUserCompletedLesson(int userCompletedLessonId);
 }

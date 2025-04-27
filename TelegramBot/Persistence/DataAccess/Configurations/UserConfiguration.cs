@@ -10,7 +10,8 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         builder.ToTable("users");
         
-        builder.HasKey(u => u.Id);
+        builder.HasIndex(u => u.Id)
+            .IsUnique();
         
         builder.Property(u => u.Username)
             .IsRequired()

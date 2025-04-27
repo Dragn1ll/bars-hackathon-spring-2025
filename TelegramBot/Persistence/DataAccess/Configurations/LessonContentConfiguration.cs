@@ -12,9 +12,6 @@ public class LessonContentConfiguration : IEntityTypeConfiguration<LessonContent
         
         builder.HasKey(lc => lc.Id);
         
-        builder.Property(lc => lc.Content)
-            .IsRequired();
-        
         builder.HasOne(lc => lc.Lesson)
             .WithMany(l => l.LessonContents)
             .HasForeignKey(lc => lc.LessonId)

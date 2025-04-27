@@ -1,11 +1,12 @@
 using Domain.Entities;
+using Domain.Models.Dto.Admin;
+using Domain.Utils;
 
 namespace Domain.Abstractions.Services;
 
 public interface ILessonContentService
 {
-    Task<LessonContentEntity> AddLessonContent(LessonContentEntity lessonContent);
-    Task<bool> RemoveLessonContent(int lessonContentId);
-    Task<LessonContentEntity> GetLessonContent(int lessonContentId);
-    Task<List<LessonContentEntity>> GetAllLessonContent(int lessonId);
+    Task<Result<AdminLessonContentResponseDto>> AddLessonContent(CreateLessonContentDto lessonContent);
+    Task<Result> RemoveLessonContent(int lessonContentId);
+    Task<Result<List<AdminLessonContentResponseDto>>> GetAllLessonContents(int lessonId);
 }
