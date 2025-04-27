@@ -10,7 +10,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<CourseEntity>
     {
         builder.ToTable("courses");
         
-        builder.HasKey(c => c.Id);
+        builder.HasKey(c => c.CourseId);
         
         builder.Property(c => c.Title)
             .IsRequired()

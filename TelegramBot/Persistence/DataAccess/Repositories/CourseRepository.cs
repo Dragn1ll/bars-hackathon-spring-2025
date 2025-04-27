@@ -25,7 +25,7 @@ public class CourseRepository(AppDbContext context) :
 
     public async Task<CourseEntity?> GetCourseByIdAsync(int courseId)
     {
-        return await GetByFilterAsync(e => e.Id == courseId);
+        return await GetByFilterAsync(e => e.CourseId == courseId);
     }
 
     public async Task<bool> PatchCourseTitleAsync(int courseId, string newTitle)
@@ -45,6 +45,6 @@ public class CourseRepository(AppDbContext context) :
 
     public async Task<bool> DeleteCourseAsync(int courseId)
     {
-        return await DeleteAsync(e => e.Id == courseId);
+        return await DeleteAsync(e => e.CourseId == courseId);
     }
 }
