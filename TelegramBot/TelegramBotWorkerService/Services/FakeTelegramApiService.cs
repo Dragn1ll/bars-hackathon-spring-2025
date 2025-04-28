@@ -7,14 +7,14 @@ namespace TelegramBotWorkerService.Services;
 public class FakeTelegramApiService : ITelegramApiService
 {
     private static readonly List<LessonDto> Lessons = [
-        new(Guid.NewGuid(), "Урок 1"),
-        new(Guid.NewGuid(), "Урок 2")];
+        new(Guid.NewGuid(),Guid.NewGuid(), "Урок 1"),
+        new(Guid.NewGuid(),Guid.NewGuid(), "Урок 2")];
     private static readonly List<ModuleDto> Modules = [
-        new(Guid.NewGuid(), "Модуль 1", Lessons),
-        new(Guid.NewGuid(), "Модуль 2", Lessons), ];
+        new(Lessons[0].ModuleId, Guid.NewGuid(),"Модуль 1", Lessons),
+        new(Lessons[1].ModuleId, Guid.NewGuid(),"Модуль 2", Lessons), ];
     private static readonly List<CourseDto> Courses = [
-    new(Guid.NewGuid(), "Курс 1", "Описание 1", Modules),
-    new(Guid.NewGuid(), "Курс 2", "Описание 2", Modules)];
+    new(Modules[0].LessonId, "Курс 1", "Описание 1", Modules),
+    new(Modules[0].LessonId, "Курс 2", "Описание 2", Modules)];
     
     
     public Task RegisterUser(string phoneNumber, long userId)

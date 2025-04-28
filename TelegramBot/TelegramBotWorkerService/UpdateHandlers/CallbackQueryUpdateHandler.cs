@@ -65,28 +65,12 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             .ToArray();
         var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
             .CreateInlineKeyboardMarkup();
-        try
-        {
             await botClient.EditMessageText(
                 chatId: callbackQuery.Message!.Chat.Id,
                 messageId: callbackQuery.Message!.MessageId,
                 replyMarkup: inlineKeyboardMarkup,
                 text: $"Список курсов",
                 cancellationToken: cancelToken);
-        }
-        catch (Exception e)
-        {
-            await botClient.DeleteMessage(
-                chatId: callbackQuery.Message!.Chat.Id,
-                messageId: callbackQuery.Message!.MessageId, 
-                cancellationToken: cancelToken);
-            await botClient.SendMessage(
-                chatId: callbackQuery.Message!.Chat.Id,
-                replyMarkup: inlineKeyboardMarkup,
-                text: $"Список курсов",
-                cancellationToken: cancelToken);
-        }
-        
     }
     
     [Command("course")]
@@ -139,16 +123,32 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             .AddInlineKeyboardRow(new InlineKeyboardButton
             {
                 Text = "Назад",
-                CallbackData = "courses"
+                CallbackData = $"course#{module.LessonId}"
             })
             .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageText(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            text: $"*{module.Title}*",
-            parseMode: ParseMode.Markdown,
-            cancellationToken: cancelToken);
+        try
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{module.Title}*",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancelToken);
+        }
+        catch (Exception)
+        {
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{module.Title}*",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancelToken);
+        }
     }
     
     [Command("lesson")]
@@ -162,7 +162,7 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
         var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(new InlineKeyboardButton
             {
                 Text = "Назад",
-                CallbackData = "courses"
+                CallbackData = $"module#{lesson.ModuleId}"
             })
             .CreateInlineKeyboardMarkup();
         await botClient.EditMessageMedia(
