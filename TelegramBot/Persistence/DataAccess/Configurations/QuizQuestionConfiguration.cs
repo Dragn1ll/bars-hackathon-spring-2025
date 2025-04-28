@@ -12,8 +12,7 @@ public class QuizQuestionConfiguration : IEntityTypeConfiguration<QuizQuestionEn
         
         builder.HasKey(q => q.QuestionId);
         
-        builder.Property(q => q.QuestionText)
-            .IsRequired();
+        builder.Property(q => q.QuestionText);
         
         builder.HasOne(q => q.Lesson)
             .WithMany(l => l.QuizQuestions)

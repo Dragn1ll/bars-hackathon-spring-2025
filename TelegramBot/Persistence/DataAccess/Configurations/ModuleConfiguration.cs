@@ -13,7 +13,7 @@ public class ModuleConfiguration : IEntityTypeConfiguration<ModuleEntity>
         builder.HasKey(m => m.ModuleId);
         
         builder.Property(m => m.Title)
-            .IsRequired().HasMaxLength(255);
+            .HasMaxLength(255);
         
         builder.HasOne(m => m.Course)
             .WithMany(c => c.Modules)

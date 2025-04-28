@@ -13,7 +13,6 @@ public class LessonConfiguration : IEntityTypeConfiguration<LessonEntity>
         builder.HasKey(l => l.LessonId);
         
         builder.Property(l => l.Title)
-            .IsRequired()
             .HasMaxLength(255);
         
         builder.HasOne(l => l.Module)

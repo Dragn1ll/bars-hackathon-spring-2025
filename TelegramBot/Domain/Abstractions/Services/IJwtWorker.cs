@@ -4,5 +4,5 @@ namespace Domain.Abstractions.Services;
 
 public interface IJwtWorker
 {
-    string GenerateToken(UserEntity user);
+    string GenerateToken(AdminEntity user);
 }
