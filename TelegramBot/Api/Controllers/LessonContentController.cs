@@ -10,10 +10,19 @@ namespace Api.Controllers;
 public class LessonContentController(ILessonContentService lessonContentService): ControllerBase
 {
     [Authorize]
-    [HttpPost("/create")]
-    public async Task<IActionResult> CreateLessonContent(CreateLessonContentDto lessonContentDto)
+    [HttpPost("/create/file/{lessonId:guid}")]
+    public async Task<IActionResult> CreateLessonContent(Guid lessonId, IFormFile file)
     {
-        var result = await lessonContentService.AddLessonContent(lessonContentDto);
+        await using var stream = file.OpenReadStream();
+        var result = await lessonContentService.AddLessonContent(lessonId, file.FileName, stream, file.ContentType);
+        return ResultRouter.GetActionResult(result);
+    }
+
+    [Authorize]
+    [HttpPost("/create/text/{lessonId:guid}/")]
+    public async Task<IActionResult> CreateLessonText(CreateLessonContentTextDto lessonContentTextDto)
+    {
+        var result = await lessonContentService.AddLessonContentText(lessonContentTextDto);
         return ResultRouter.GetActionResult(result);
     }
     

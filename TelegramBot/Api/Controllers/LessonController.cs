@@ -46,11 +46,19 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/all/files/{lessonId:guid}")]
+    [Route("/files/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonFiles(Guid lessonId)
     {
         var files = await lessonService.GetAllLessonFiles(lessonId);
         return ResultRouter.GetActionResult(files);
+    }
+
+    [HttpGet]
+    [Route("/files/urls/{lessonId:guid}")]
+    public async Task<IActionResult> GetAllLessonFileUrls(Guid lessonId)
+    {
+        var filesUrls = await lessonService.GetLessonFilesUrls(lessonId);
+        return ResultRouter.GetActionResult(filesUrls);
     }
 
     [HttpGet]

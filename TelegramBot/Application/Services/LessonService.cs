@@ -101,12 +101,27 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         {
             return Result<List<Stream>>.Success((await unitOfWork.LessonContents
                     .GetAllByFilterAsync(l => l.LessonId == lessonId))
-                .Select(lc => storageService.DownloadFileAsync(lc.FileName).Result.Value)
+                .Select(lc => storageService.DownloadFileAsync(lc.LessonContentId + "_" + lc.FileName).Result.Value)
                 .ToList());
         }
         catch (Exception exception)
         {
             return Result<List<Stream>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<List<string>>> GetLessonFilesUrls(Guid lessonId)
+    {
+        try
+        {
+            return Result<List<string>>.Success((await unitOfWork.LessonContents
+                    .GetAllByFilterAsync(l => l.LessonId == lessonId))
+                .Select(lc => storageService.GetFileUrlAsync(lc.LessonContentId + "_" + lc.FileName).Result.Value)
+                .ToList());
+        }
+        catch (Exception exception)
+        {
+            return Result<List<string>>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
