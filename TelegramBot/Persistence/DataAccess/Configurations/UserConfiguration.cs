@@ -11,8 +11,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
         builder.ToTable("users");
         
-        builder.HasIndex(u => u.UserId)
-            .IsUnique();
+        builder.HasKey(u => u.UserId);
 
         builder.Property(u => u.Role)
             .HasConversion<string>();
