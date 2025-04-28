@@ -2,6 +2,6 @@
 
 public record ModuleDto(
     Guid ModuleId,
-    Guid LessonId,
+    Guid CourseId,
     string Title,
     List<LessonDto> Lessons);
