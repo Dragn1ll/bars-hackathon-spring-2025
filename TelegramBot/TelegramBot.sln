@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotWorkerService", "TelegramBotWorkerService\TelegramBotWorkerService.csproj", "{EC0794A0-7021-4187-B54F-59758F08ADDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotWebhook", "TelegramBotWebhook\TelegramBotWebhook.csproj", "{FF3F75D9-2ECF-4A88-9E45-BF04D1AB7828}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{EC0794A0-7021-4187-B54F-59758F08ADDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0794A0-7021-4187-B54F-59758F08ADDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0794A0-7021-4187-B54F-59758F08ADDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF3F75D9-2ECF-4A88-9E45-BF04D1AB7828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF3F75D9-2ECF-4A88-9E45-BF04D1AB7828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF3F75D9-2ECF-4A88-9E45-BF04D1AB7828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF3F75D9-2ECF-4A88-9E45-BF04D1AB7828}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
