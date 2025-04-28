@@ -10,6 +10,7 @@ public interface IUnitOfWork
     public IQuizQuestionRepository QuizQuestions { get; set; }
     public IQuizOptionRepository QuizOptions { get; set; }
     public IUserAnsweredQuestionRepository AnsweredQuestionsRepository { get; set; }
+    public IAdminRepository Admins { get; set; }
     public Task SaveChangesAsync();
     public Task BeginTransactionAsync(CancellationToken cancellationToken = default);
     public Task CommitAsync(CancellationToken cancellationToken = default);

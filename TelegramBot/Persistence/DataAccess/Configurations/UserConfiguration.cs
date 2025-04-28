@@ -5,24 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.DataAccess.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
+public class UserConfiguration : IEntityTypeConfiguration<Admin>
 {
-    public void Configure(EntityTypeBuilder<UserEntity> builder)
+    public void Configure(EntityTypeBuilder<Admin> builder)
     {
         builder.ToTable("users");
         
         builder.HasKey(u => u.UserId);
-
-        builder.Property(u => u.Role)
-            .HasConversion<string>();
-        
-        builder.Property(u => u.Username)
-            .IsRequired()
-            .HasMaxLength(50);
         
         builder.Property(u => u.Email)
-            .HasMaxLength(100)
-            .IsRequired();
+            .HasMaxLength(100);
         
         builder.HasIndex(u => u.Email)
             .IsUnique();

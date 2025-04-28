@@ -12,12 +12,11 @@ public class JwtWorker(IOptions<JwtOptions> options) : IJwtWorker
 {
     private readonly JwtOptions _options = options.Value;
 
-    public string GenerateToken(UserEntity user)
+    public string GenerateToken(AdminEntity user)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.NameIdentifier, user.AdminId.ToString())
         };
         
         var credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 

@@ -12,11 +12,9 @@ public class QuizOptionConfiguration : IEntityTypeConfiguration<QuizOptionEntity
         
         builder.HasKey(qo => qo.OptionId);
         
-        builder.Property(qo => qo.Text)
-            .IsRequired();
+        builder.Property(qo => qo.Text);
         
-        builder.Property(qo => qo.IsCorrect)
-            .IsRequired();
+        builder.Property(qo => qo.IsCorrect);
         
         builder.HasOne(qo => qo.QuizQuestion)
             .WithMany(q => q.QuizOptions)

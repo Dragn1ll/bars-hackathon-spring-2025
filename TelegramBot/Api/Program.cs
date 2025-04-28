@@ -37,6 +37,7 @@ services.AddScoped<IFileStorageService, MinioService>();
 services.AddScoped<ILessonContentService, LessonContentService>();
 services.AddScoped<IQuizQuestionService, QuizQuestionService>();
 services.AddScoped<IQuizOptionService, QuizOptionService>();
+services.AddScoped<IAdminService, AdminService>();
 
 services.AddTransient<Mapper>();
 
@@ -50,6 +51,7 @@ services.AddScoped<IQuizQuestionRepository, QuizQuestionRepository>();
 services.AddScoped<IUserAnsweredQuestionRepository, UserAnsweredQuestionRepository>();
 services.AddScoped<IUserCompletedLessonRepository, UserCompletedLessonRepository>();
 services.AddScoped<IUserRepository, UserRepository>();
+services.AddScoped<IAdminRepository, AdminRepository>();
 
 services.AddScoped<IJwtWorker, JwtWorker>();
 

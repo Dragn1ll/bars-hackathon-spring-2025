@@ -19,5 +19,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new QuizQuestionConfiguration());
         modelBuilder.ApplyConfiguration(new QuizOptionConfiguration());
         modelBuilder.ApplyConfiguration(new UserAnsweredQuestionConfiguration());
+        modelBuilder.ApplyConfiguration(new AdminConfiguration());
     }
 }
