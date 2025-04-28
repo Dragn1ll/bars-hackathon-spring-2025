@@ -14,10 +14,15 @@ public class QuizOptionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizOpt
     {
         try
         {
-            return await unitOfWork.QuizOptions.AddAsync(
-                mapper.Map<CreateQuestionOptionDto, QuizOptionEntity>(quizOption))
+            var entity = mapper.Map<CreateQuestionOptionDto, QuizOptionEntity>(quizOption);
+            entity.OptionId = Guid.NewGuid();
+            
+            var result = await unitOfWork.QuizOptions.AddAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
                 ? Result<AdminQuestionOptionResponseDto>.Success(
-                    mapper.Map<CreateQuestionOptionDto, AdminQuestionOptionResponseDto>(quizOption))
+                    mapper.Map<QuizOptionEntity, AdminQuestionOptionResponseDto>(entity))
                 : Result<AdminQuestionOptionResponseDto>.Failure(
                     new Error(ErrorType.ServerError, "Cannot add quiz option"));
         }
@@ -28,16 +33,13 @@ public class QuizOptionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizOpt
         }
     }
 
-    public async Task<Result> DeleteQuizOption(int quizOptionId)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Result> DeleteQuizOption(Guid quizOptionId)
     {
         try
         {
-            return await unitOfWork.QuizOptions.DeleteAsync(qo => qo.OptionId == quizOptionId)
+            var result = await unitOfWork.QuizOptions.DeleteAsync(qo => qo.OptionId == quizOptionId);
+            
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Cannot delete quiz option"));
         }

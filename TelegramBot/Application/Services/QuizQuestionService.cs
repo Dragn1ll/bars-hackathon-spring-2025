@@ -14,10 +14,17 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
     {
         try
         {
-            return await unitOfWork.QuizQuestions.AddAsync(
-                mapper.Map<CreateQuestionDto, QuizQuestionEntity>(quizQuestion))
-                ? Result<AdminQuestionResponseDto>.Success(
-                    mapper.Map<CreateQuestionDto, AdminQuestionResponseDto>(quizQuestion))
+            var entity = mapper.Map<CreateQuestionDto, QuizQuestionEntity>(quizQuestion);
+            entity.QuestionId = Guid.NewGuid();
+
+            var result = await unitOfWork.QuizQuestions.AddAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
+                ? Result<AdminQuestionResponseDto>.Success(new AdminQuestionResponseDto(entity.QuestionId, 
+                    entity.QuestionText, entity.QuizOptions
+                        .Select(qo => new AdminQuestionOptionResponseDto(qo.OptionId, qo.Text, qo.IsCorrect))
+                        .ToList()))
                 : Result<AdminQuestionResponseDto>.Failure(
                     new Error(ErrorType.ServerError, "Could not create quiz question."));
         }
@@ -36,8 +43,12 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                     .GetByFilterAsync(q => q.QuestionId == quizQuestionId) == null)
                 return Result.Failure(
                     new Error(ErrorType.NotFound, "Quiz question not found."));
+
+            var result = await unitOfWork.QuizQuestions
+                .DeleteAsync(q => q.QuestionId == quizQuestionId);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.QuizQuestions.DeleteAsync(q => q.QuestionId == quizQuestionId)
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Could not delete quiz question."));
         }

@@ -18,8 +18,15 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
             if (await ThereIsAModule(m => m.Title == module.Title && m.CourseId == module.CourseId))
                 return Result<ModuleDto>.Failure(
                     new Error(ErrorType.BadRequest, "Module already exists"));
+
+            var entity = mapper.Map<CreateModuleDto, ModuleEntity>(module);
+            entity.ModuleId = Guid.NewGuid();
             
-            return await unitOfWork.Modules.AddAsync(mapper.Map<CreateModuleDto, ModuleEntity>(module))
+            var result = await unitOfWork.Modules
+                .AddAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result 
                 ? Result<ModuleDto>.Success(mapper.Map<CreateModuleDto, ModuleDto>(module)) 
                 : Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, "Can't create module")); 
         }
@@ -36,8 +43,12 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
             if (!await ThereIsAModule(m => m.ModuleId == module.ModuleId))
                 return Result<ModuleDto>.Failure(
                     new Error(ErrorType.NotFound, "Module already not exists"));
+
+            var result = await unitOfWork.Modules
+                .PatchAsync(module.ModuleId, m => m.Title = module.Title);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Modules.PatchAsync(module.ModuleId, m => m.Title = module.Title)
+            return result
                 ? Result<ModuleDto>.Success(module) 
                 : Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, "Can't update module")); 
         }
@@ -54,8 +65,11 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
             if (!await ThereIsAModule(m => m.ModuleId == moduleId))
                 return Result<ModuleDto>.Failure(
                     new Error(ErrorType.NotFound, "Module already not exists"));
+
+            var result = await unitOfWork.Modules.DeleteAsync(m => m.ModuleId == moduleId);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Modules.DeleteAsync(m => m.ModuleId == moduleId)
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't delete module"));
         }
