@@ -11,9 +11,10 @@ public class LessonContentController(ILessonContentService lessonContentService)
 {
     [Authorize]
     [HttpPost("/create")]
-    public async Task<IActionResult> CreateLessonContent(CreateLessonContentDto lessonContentDto)
+    public async Task<IActionResult> CreateLessonContent(CreateLessonContentDto lessonContentDto, IFormFile file)
     {
-        var result = await lessonContentService.AddLessonContent(lessonContentDto);
+        await using var stream = file.OpenReadStream();
+        var result = await lessonContentService.AddLessonContent(lessonContentDto, file.FileName, stream, file.ContentType);
         return ResultRouter.GetActionResult(result);
     }
     

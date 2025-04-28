@@ -5,7 +5,4 @@ namespace Domain.Models.Dto.Admin;
 
 public record CreateLessonContentDto(
     Guid LessonId,
-    string FileName,
-    IFormFile File,
-    LessonContentType ContentType
-    );
+    string FileName);
