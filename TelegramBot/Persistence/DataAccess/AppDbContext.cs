@@ -18,6 +18,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new LessonContentConfiguration());
         modelBuilder.ApplyConfiguration(new QuizQuestionConfiguration());
         modelBuilder.ApplyConfiguration(new QuizOptionConfiguration());
-        modelBuilder.ApplyConfiguration(new LessonContentTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new UserAnsweredQuestionConfiguration());
     }
 }

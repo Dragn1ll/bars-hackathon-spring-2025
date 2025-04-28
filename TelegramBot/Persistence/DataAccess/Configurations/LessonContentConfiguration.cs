@@ -19,7 +19,7 @@ public class LessonContentConfiguration : IEntityTypeConfiguration<LessonContent
         
         builder.Property(lc => lc.IsDeleted)
             .HasDefaultValue(false);
-        
+
         builder.Property(lc => lc.Type)
             .HasConversion<int>();
     }

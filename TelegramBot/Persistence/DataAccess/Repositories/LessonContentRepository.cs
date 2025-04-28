@@ -21,9 +21,4 @@ public class LessonContentRepository(AppDbContext context) :
     {
         return await GetAllByFilterAsync(e => e.LessonId == lessonId);
     }
-
-    public async Task<IEnumerable<LessonContentEntity?>> GetLessonContentsByTypeAsync(int typeId)
-    {
-        return await GetAllByFilterAsync(e => e.LessonContentTypeId == typeId);
-    }
 }
