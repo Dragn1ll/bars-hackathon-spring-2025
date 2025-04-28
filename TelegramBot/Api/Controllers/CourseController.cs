@@ -2,6 +2,7 @@ using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
 using Domain.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -11,6 +12,7 @@ namespace Api.Controllers;
 public class CourseController(ICourseService courseService): ControllerBase
 {
     [HttpPost]
+    [Authorize]
     [Route("/add")]
     public async Task<IActionResult> CreateCourse(CreateCourseDto createCourseDto)
     {
@@ -19,6 +21,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
 
     [HttpPatch]
+    [Authorize]
     [Route("/update")]
     public async Task<IActionResult> UpdateCourse(CourseDto courseDto)
     {
@@ -27,6 +30,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
 
     [HttpDelete]
+    [Authorize]
     [Route("/delete/{courseId:guid}")]
     public async Task<IActionResult> DeleteCourse(Guid courseId)
     {
