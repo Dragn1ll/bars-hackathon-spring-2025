@@ -10,7 +10,7 @@ public class UnitOfWork(AppDbContext context,
     ILessonContentRepository lessonContentRepository,
     IQuizQuestionRepository quizQuestionRepository,
     IQuizOptionRepository quizOptionRepository,
-    IUserAnsweredQuestion answeredQuestionRepository): IUnitOfWork
+    IUserAnsweredQuestionRepository answeredQuestionRepositoryRepository): IUnitOfWork
 {
     public IUserRepository Users { get; set; } = userRepository;
     public ICourseRepository Courses { get; set; } = courseRepository;
@@ -19,7 +19,7 @@ public class UnitOfWork(AppDbContext context,
     public ILessonContentRepository LessonContents { get; set; } = lessonContentRepository;
     public IQuizQuestionRepository QuizQuestions { get; set; } = quizQuestionRepository;
     public IQuizOptionRepository QuizOptions { get; set; } = quizOptionRepository;
-    public IUserAnsweredQuestion AnsweredQuestions { get; set; } = answeredQuestionRepository;
+    public IUserAnsweredQuestionRepository AnsweredQuestionsRepository { get; set; } = answeredQuestionRepositoryRepository;
     
     public async Task SaveChangesAsync()
     {

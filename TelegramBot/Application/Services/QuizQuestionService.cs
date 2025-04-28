@@ -98,7 +98,7 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                 return Result<BotQuestionResponseDto>.Failure(
                     new Error(ErrorType.NotFound, "Question not found."));
 
-            await unitOfWork.AnsweredQuestions.AddAsync(new UserAnsweredQuestionEntity
+            await unitOfWork.AnsweredQuestionsRepository.AddAsync(new UserAnsweredQuestionEntity
             {
                 UserId = userAnswerDto.UserId,
                 QuestionId = userAnswerDto.QuestionId,

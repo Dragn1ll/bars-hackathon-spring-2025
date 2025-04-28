@@ -38,7 +38,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
     
     [HttpGet]
-    [Route("/all/{courseId:int}")]
+    [Route("/all/{courseId:guid}")]
     public async Task<IActionResult> GetModules(Guid courseId)
     {
         var modules = await moduleService.GetModules(courseId);
