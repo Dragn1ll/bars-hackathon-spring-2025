@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/quiz/options")]
+[Route("quiz/options")]
 public class QuizOptionController(IQuizOptionService quizOptionService): ControllerBase
 {
     [Authorize]
-    [HttpPost("/create")]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateQuestionOption(CreateQuestionOptionDto questionOptionDto)
     {
         var result = await quizOptionService.AddQuizOption(questionOptionDto);
@@ -18,7 +18,7 @@ public class QuizOptionController(IQuizOptionService quizOptionService): Control
     }
     
     [Authorize]
-    [HttpDelete("/delete/{questionOptionId:guid}")]
+    [HttpDelete("delete/{questionOptionId:guid}")]
     public async Task<IActionResult> DeleteQuestionOption(Guid questionOptionId)
     {
         var result = await quizOptionService.DeleteQuizOption(questionOptionId);

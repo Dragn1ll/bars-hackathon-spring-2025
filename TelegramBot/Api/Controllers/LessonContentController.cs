@@ -10,7 +10,7 @@ namespace Api.Controllers;
 public class LessonContentController(ILessonContentService lessonContentService): ControllerBase
 {
     [Authorize]
-    [HttpPost("/create/file/{lessonId:guid}")]
+    [HttpPost("create/file/{lessonId:guid}")]
     public async Task<IActionResult> CreateLessonContent(Guid lessonId, IFormFile file)
     {
         await using var stream = file.OpenReadStream();
@@ -19,7 +19,7 @@ public class LessonContentController(ILessonContentService lessonContentService)
     }
 
     [Authorize]
-    [HttpPost("/create/text/{lessonId:guid}/")]
+    [HttpPost("create/text/{lessonId:guid}/")]
     public async Task<IActionResult> CreateLessonText(CreateLessonContentTextDto lessonContentTextDto)
     {
         var result = await lessonContentService.AddLessonContentText(lessonContentTextDto);
@@ -27,14 +27,14 @@ public class LessonContentController(ILessonContentService lessonContentService)
     }
     
     [Authorize]
-    [HttpDelete("/delete/{lessonContentId:guid}")]
+    [HttpDelete("delete/{lessonContentId:guid}")]
     public async Task<IActionResult> DeleteLessonContent(Guid lessonContentId)
     {
         var result = await lessonContentService.RemoveLessonContent(lessonContentId);
         return ResultRouter.GetActionResult(result);
     }
 
-    [HttpGet("/all/{lessonId:guid}")]
+    [HttpGet("all/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonContent(Guid lessonId)
     {
         var result = await lessonContentService.GetAllLessonContents(lessonId);
