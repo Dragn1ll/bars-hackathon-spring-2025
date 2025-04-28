@@ -3,6 +3,6 @@ using Microsoft.AspNetCore.Http;
 
 namespace Domain.Models.Dto.Admin;
 
-public record CreateLessonContentDto(
+public record CreateLessonContentTextDto(
     Guid LessonId,
-    string FileName);
+    string Content);

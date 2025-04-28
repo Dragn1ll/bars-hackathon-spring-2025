@@ -13,17 +13,20 @@ public class LessonContentService(IUnitOfWork unitOfWork,
     IFileStorageService fileStorageService,  
     Mapper mapper) : ILessonContentService
 {
-    public async Task<Result<AdminLessonContentResponseDto>> AddLessonContent(CreateLessonContentDto lessonContent, string fileName, Stream fileStream, string contentType)
+    public async Task<Result<AdminLessonContentResponseDto>> AddLessonContent(Guid lessonId, string fileName, Stream fileStream, string contentType)
     {
         try
         {
-            if (await ThereIsALessonContent(lc => lc.LessonId == lessonContent.LessonId 
-                                                  && lc.FileName == lessonContent.FileName))
+            if (await ThereIsALessonContent(lc => lc.LessonId == lessonId))
                 return Result<AdminLessonContentResponseDto>.Failure(
                     new Error(ErrorType.BadRequest, "File already exists"));
 
-            var entity = mapper.Map<CreateLessonContentDto, LessonContentEntity>(lessonContent);
-            entity.LessonContentId = Guid.NewGuid();
+            var entity = new LessonContentEntity
+            {
+                LessonId = lessonId,
+                LessonContentId = Guid.NewGuid(),
+                FileName = fileName
+            };
 
             var result = await unitOfWork.LessonContents.AddAsync(entity);
             await unitOfWork.SaveChangesAsync();
@@ -40,6 +43,36 @@ public class LessonContentService(IUnitOfWork unitOfWork,
         catch (Exception exception)
         {
             return Result<AdminLessonContentResponseDto>
+                .Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result> AddLessonContentText(CreateLessonContentTextDto createLessonContentTextDto)
+    {
+        try
+        {
+            if (await ThereIsALessonContent(lc => lc.LessonId == createLessonContentTextDto.LessonId))
+                return Result<AdminLessonContentResponseDto>.Failure(
+                    new Error(ErrorType.BadRequest, "File already exists"));
+
+            var entity = new LessonContentEntity
+            {
+                LessonId = createLessonContentTextDto.LessonId,
+                LessonContentId = Guid.NewGuid(),
+                TextContent = createLessonContentTextDto.Content
+            };
+
+            var result = await unitOfWork.LessonContents.AddAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
+                ? Result.Success()
+                : Result.Failure(
+                    new Error(ErrorType.ServerError, "Can't add lesson content"));
+        }
+        catch (Exception exception)
+        {
+            return Result
                 .Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
