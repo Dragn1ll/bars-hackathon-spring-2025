@@ -19,10 +19,15 @@ public class LessonContentService(IUnitOfWork unitOfWork, Mapper mapper) : ILess
                 return Result<AdminLessonContentResponseDto>.Failure(
                     new Error(ErrorType.BadRequest, "File already exists"));
 
-            return await unitOfWork.LessonContents.AddAsync(
-                mapper.Map<CreateLessonContentDto, LessonContentEntity>(lessonContent))
+            var entity = mapper.Map<CreateLessonContentDto, LessonContentEntity>(lessonContent);
+            entity.LessonContentId = Guid.NewGuid();
+
+            var result = await unitOfWork.LessonContents.AddAsync(entity);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
                 ? Result<AdminLessonContentResponseDto>.Success(
-                    mapper.Map<CreateLessonContentDto, AdminLessonContentResponseDto>(lessonContent))
+                    mapper.Map<LessonContentEntity, AdminLessonContentResponseDto>(entity))
                 : Result<AdminLessonContentResponseDto>.Failure(
                     new Error(ErrorType.ServerError, "Can't add lesson content"));
         }
@@ -41,7 +46,11 @@ public class LessonContentService(IUnitOfWork unitOfWork, Mapper mapper) : ILess
                 return Result<AdminLessonContentResponseDto>.Failure(
                     new Error(ErrorType.NotFound, "File not found"));
 
-            return await unitOfWork.LessonContents.DeleteAsync(lc => lc.LessonContentId == lessonContentId)
+            var result = await unitOfWork.LessonContents
+                .DeleteAsync(lc => lc.LessonContentId == lessonContentId);
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't remove lesson content"));
         }

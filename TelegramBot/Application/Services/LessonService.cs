@@ -22,8 +22,11 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
             
             var lessonEntity = mapper.Map<CreateLessonDto, LessonEntity>(lesson);
             lessonEntity.LessonId = Guid.NewGuid();
+
+            var result = await unitOfWork.Lessons.AddAsync(lessonEntity);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Lessons.AddAsync(lessonEntity)
+            return result
                 ? Result<LessonDto>.Success(mapper.Map<LessonEntity, LessonDto>(lessonEntity))
                 : Result<LessonDto>.Failure(new Error(ErrorType.BadRequest, 
                     "Cannot create lesson"));
@@ -41,8 +44,12 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
             if (!await ThereIsALesson(l => l.LessonId == lesson.LessonId))
                 return Result<LessonDto>.Failure(
                     new Error(ErrorType.NotFound, "Lesson already not exists"));
+
+            var result = await unitOfWork.Lessons
+                .PatchAsync(lesson.LessonId, l => l.Title = lesson.Title);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Lessons.PatchAsync(lesson.LessonId, l => l.Title = lesson.Title)
+            return result
                 ? Result<LessonDto>.Success(lesson) 
                 : Result<LessonDto>.Failure(new Error(ErrorType.ServerError, "Can't update lesson")); 
         }
@@ -59,8 +66,11 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
             if (!await ThereIsALesson(l => l.LessonId == lessonId))
                 return Result.Failure(
                     new Error(ErrorType.NotFound, "Lesson already not exists"));
+
+            var result = await unitOfWork.Lessons.DeleteAsync(l => l.LessonId == lessonId);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Lessons.DeleteAsync(l => l.LessonId == lessonId)
+            return result 
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't delete lesson"));
         }

@@ -24,6 +24,8 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
             
             var result = await unitOfWork.Courses
                 .AddAsync(courseEntity);
+
+            await unitOfWork.SaveChangesAsync();
             
             return result 
                 ? Result<CourseDto>.Success(mapper.Map<CourseEntity, CourseDto>(courseEntity)) 
@@ -43,12 +45,16 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
             if (!await ThereIsACourse(c => c.CourseId == course.CourseId))
                 return Result<CourseDto>.Failure(
                     new Error(ErrorType.BadRequest, "Course does not exist"));
-            
-            return await unitOfWork.Courses.PatchAsync(course.CourseId, c =>
+
+            var result = await unitOfWork.Courses.PatchAsync(course.CourseId, c =>
             {
                 c.Title = course.Title;
                 c.Description = course.Description;
-            })
+            });
+            
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
                 ? Result<CourseDto>.Success(mapper.Map<CourseDto, CourseDto>(course))
                 : Result<CourseDto>.Failure(new Error(ErrorType.ServerError, "Can't change course"));
         }
@@ -64,8 +70,12 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
         {
             if (!await ThereIsACourse(c => c.CourseId == courseId))
                 return Result.Failure(new Error(ErrorType.BadRequest, "Course does not exist"));
+
+            var result = await unitOfWork.Courses.DeleteAsync(c => c.CourseId == courseId);
             
-            return await unitOfWork.Courses.DeleteAsync(c => c.CourseId == courseId)
+            await unitOfWork.SaveChangesAsync();
+            
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't delete course"));
         }
