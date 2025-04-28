@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBotWorkerService.Abstractions;
 using TelegramBotWorkerService.Models;
@@ -64,20 +65,39 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             .ToArray();
         var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
             .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageText(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            text: $"Список курсов", 
-            cancellationToken: cancelToken);
+        try
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"Список курсов",
+                cancellationToken: cancelToken);
+        }
+        catch (Exception e)
+        {
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"Список курсов",
+                cancellationToken: cancelToken);
+        }
+        
     }
     
     [Command("course")]
     public async Task GetCourse(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
-        var courseId = int.Parse(callbackQuery.Data!.Split('#')[1]);
-        var inlineKeyboardButtons = (await _apiService.GetModules(courseId))
+        var courseId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+        var course = await _apiService.GetCourse(courseId);
+        if (course == null)
+            return;
+        var inlineKeyboardButtons = course.Modules
             .Select(module => new InlineKeyboardButton
             {
                 Text = module.Title,
@@ -95,7 +115,8 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             chatId: callbackQuery.Message!.Chat.Id,
             messageId: callbackQuery.Message!.MessageId,
             replyMarkup: inlineKeyboardMarkup,
-            text: $"Выберите модуль", 
+            text: $"*{course.Title}*\n_{course.Description}_",
+            parseMode: ParseMode.Markdown,
             cancellationToken: cancelToken);
     }
     
@@ -103,8 +124,11 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
     public async Task GetModule(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
-        var lessonId = int.Parse(callbackQuery.Data!.Split('#')[1]);
-        var inlineKeyboardButtons = (await _apiService.GetLessons(lessonId))
+        var moduleId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+        var module = await _apiService.GetModule(moduleId);
+        if (module == null)
+            return;
+        var inlineKeyboardButtons = module.Lessons
             .Select(lesson => new InlineKeyboardButton
             {
                 Text = lesson.Title,
@@ -115,33 +139,6 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             .AddInlineKeyboardRow(new InlineKeyboardButton
             {
                 Text = "Назад",
-                CallbackData = callbackQuery.Data
-            })
-            .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageText(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            text: $"Выберите урок", 
-            cancellationToken: cancelToken);
-    }
-    
-    [Command("lesson")]
-    public async Task GetLesson(ITelegramBotClient botClient, CallbackQuery callbackQuery,
-        CancellationToken cancelToken)
-    {
-        var courseId = int.Parse(callbackQuery.Data!.Split('#')[1]);
-        var inlineKeyboardButtons = (await _apiService.GetModules(courseId))
-            .Select(module => new InlineKeyboardButton
-            {
-                Text = module.Title,
-                CallbackData = $"module#{module.ModuleId}"
-            })
-            .ToArray();
-        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
-            .AddInlineKeyboardRow(new InlineKeyboardButton
-            {
-                Text = "Назад",
                 CallbackData = "courses"
             })
             .CreateInlineKeyboardMarkup();
@@ -149,7 +146,34 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             chatId: callbackQuery.Message!.Chat.Id,
             messageId: callbackQuery.Message!.MessageId,
             replyMarkup: inlineKeyboardMarkup,
-            text: $"Выберите модуль", 
+            text: $"*{module.Title}*",
+            parseMode: ParseMode.Markdown,
+            cancellationToken: cancelToken);
+    }
+    
+    [Command("lesson")]
+    public async Task GetLesson(ITelegramBotClient botClient, CallbackQuery callbackQuery,
+        CancellationToken cancelToken)
+    {
+        var lessonId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+        var lesson = await _apiService.GetLesson(lessonId);
+        if (lesson == null)
+            return;
+        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(new InlineKeyboardButton
+            {
+                Text = "Назад",
+                CallbackData = "courses"
+            })
+            .CreateInlineKeyboardMarkup();
+        await botClient.EditMessageMedia(
+            chatId: callbackQuery.Message!.Chat.Id,
+            messageId: callbackQuery.Message!.MessageId,
+            replyMarkup: inlineKeyboardMarkup,
+            media:  new InputMediaDocument(InputFile.FromUri("https://avatars.mds.yandex.net/i?id=85bf7002b221dd0843622a3df5b9e273_l-10471914-images-thumbs&n=13"))
+            {
+                Caption = $"*_{lesson.Title}_*",
+                ParseMode = ParseMode.MarkdownV2
+            },
             cancellationToken: cancelToken);
     }
 }

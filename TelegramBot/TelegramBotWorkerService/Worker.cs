@@ -10,7 +10,7 @@ public class Worker(ITelegramBotService telegramBotService) : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             //await telegramBotService.SendMessageAsync("привет", stoppingToken);
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(50, stoppingToken);
         }
     }
 }

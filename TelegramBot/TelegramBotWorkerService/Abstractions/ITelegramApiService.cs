@@ -6,11 +6,11 @@ namespace TelegramBotWorkerService.Abstractions;
 
 public interface ITelegramApiService
 {
-    public Task RegisterUser(string phoneNumber, long userId);
-    public Task<List<CourseDto>> GetCourses();
-    public Task<CourseDto> GetCourse(int courseId);
-    public Task<List<ModuleDto>> GetModules(int courseId);
-    public Task<List<LessonDto>> GetLessons(int moduleId);
-    public Task<BotQuestionResponseDto> StartTest(int lessonId);
-    public Task<BotQuestionResponseDto> SendAnswer(int questionId, string answer);
+    Task RegisterUser(string phoneNumber, long userId);
+    Task<List<CourseDto>> GetCourses();
+    Task<CourseDto?> GetCourse(Guid courseId);
+    Task<ModuleDto?> GetModule(Guid moduleId);
+    Task<LessonDto?> GetLesson(Guid lessonId);
+    Task<BotQuestionResponseDto> StartTest(Guid lessonId);
+    Task<BotQuestionResponseDto> SendAnswer(Guid questionId, string answer);
 }
