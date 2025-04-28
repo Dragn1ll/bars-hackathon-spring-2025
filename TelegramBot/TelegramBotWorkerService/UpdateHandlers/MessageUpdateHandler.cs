@@ -15,17 +15,17 @@ public class MessageUpdateHandler : ICustomUpdateHandler
     public MessageUpdateHandler(ITelegramApiService apiService)
     {
         _apiService = apiService;
-        _messageRoutes = typeof(MessageUpdateHandler)
+        _messageRoutes = GetType()
             .GetMethods()
             .Where(m => m.IsDefined(typeof(CommandAttribute), false))
             .ToDictionary<MethodInfo, string, Func<ITelegramBotClient, Message, CancellationToken, Task>>(
                 method => (method.GetCustomAttribute<CommandAttribute>() ??
                            throw new InvalidOperationException("No route selected")).Name,
-                method => (bot, update, cancellationToken) =>
+                method => (bot, message, cancellationToken) =>
                 {
                     try
                     {
-                        if (method.Invoke(this, [bot, update, cancellationToken]) is Task task)
+                        if (method.Invoke(this, [bot, message, cancellationToken]) is Task task)
                             return task;
                         throw new InvalidOperationException($"Method {method.Name} not found");
                     }
@@ -108,9 +108,11 @@ public class MessageUpdateHandler : ICustomUpdateHandler
                 CallbackData = $"course#{course.CourseId}"
             })
             .ToArray();
-        ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons);
+        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
+            .CreateInlineKeyboardMarkup();
         await botClient.SendMessage(message.Chat.Id, 
             "Список курсов",
+            replyMarkup: inlineKeyboardMarkup,
             cancellationToken: cancellationToken);
     }
 

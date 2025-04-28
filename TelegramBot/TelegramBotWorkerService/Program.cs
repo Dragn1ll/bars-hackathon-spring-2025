@@ -21,6 +21,7 @@ builder.Services.AddSingleton<ITelegramBotClient, TelegramBotClient>(_ =>
 builder.Services.AddSingleton<ITelegramBotService, TelegramBotService>();
 builder.Services.AddKeyedSingleton<ICustomUpdateHandler, MessageUpdateHandler>(UpdateType.Message);
 builder.Services.AddKeyedSingleton<ICustomUpdateHandler, CallbackQueryUpdateHandler>(UpdateType.CallbackQuery);
+builder.Services.AddSingleton<ITelegramApiService, FakeTelegramApiService>();
 builder.Services.AddHostedService<Worker>();
 
 
