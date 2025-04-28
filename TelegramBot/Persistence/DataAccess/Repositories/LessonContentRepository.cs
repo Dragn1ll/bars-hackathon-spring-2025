@@ -17,7 +17,7 @@ public class LessonContentRepository(AppDbContext context) :
         return await GetAllByFilterAsync(e => e.IsDeleted == true);
     }
 
-    public async Task<IEnumerable<LessonContentEntity?>> GetLessonContentsByLessonIdAsync(int lessonId)
+    public async Task<IEnumerable<LessonContentEntity?>> GetLessonContentsByLessonIdAsync(Guid lessonId)
     {
         return await GetAllByFilterAsync(e => e.LessonId == lessonId);
     }

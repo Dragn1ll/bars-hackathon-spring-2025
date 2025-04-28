@@ -16,13 +16,15 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
     {
         try
         {
-            if (await ThereIsALesson(l => l.ModuleId == lesson.ModuleId 
-                                          && l.Title == lesson.Title))
+            if (await ThereIsALesson(l => l.Title == lesson.Title))
                 return Result<LessonDto>.Failure(
                     new Error(ErrorType.BadRequest, "There is already a lesson with the same title"));
             
-            return await unitOfWork.Lessons.AddAsync(mapper.Map<CreateLessonDto, LessonEntity>(lesson))
-                ? Result<LessonDto>.Success(mapper.Map<CreateLessonDto, LessonDto>(lesson))
+            var lessonEntity = mapper.Map<CreateLessonDto, LessonEntity>(lesson);
+            lessonEntity.LessonId = Guid.NewGuid();
+            
+            return await unitOfWork.Lessons.AddAsync(lessonEntity)
+                ? Result<LessonDto>.Success(mapper.Map<LessonEntity, LessonDto>(lessonEntity))
                 : Result<LessonDto>.Failure(new Error(ErrorType.BadRequest, 
                     "Cannot create lesson"));
         }
@@ -50,7 +52,7 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         }
     }
 
-    public async Task<Result> DeleteLesson(int lessonId)
+    public async Task<Result> DeleteLesson(Guid lessonId)
     {
         try
         {
@@ -68,7 +70,7 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         }
     }
 
-    public async Task<Result<List<LessonDto>>> GetAllLessons(int moduleId)
+    public async Task<Result<List<LessonDto>>> GetAllLessons(Guid moduleId)
     {
         try
         {
@@ -83,7 +85,7 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         }
     }
 
-    public async Task<Result<List<Stream>>> GetAllLessonFiles(int lessonId)
+    public async Task<Result<List<Stream>>> GetAllLessonFiles(Guid lessonId)
     {
         try
         {
@@ -95,6 +97,24 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         catch (Exception exception)
         {
             return Result<List<Stream>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+        }
+    }
+
+    public async Task<Result<LessonDto>> GetLesson(Guid lessonId)
+    {
+        try
+        {
+            if (!await ThereIsALesson(l => l.LessonId == lessonId))
+                return Result<LessonDto>.Failure(
+                    new Error(ErrorType.NotFound, "Lesson already not exists"));
+            
+            return Result<LessonDto>.Success(
+                mapper.Map<LessonEntity, LessonDto>(await unitOfWork.Lessons
+                    .GetByFilterAsync(lesson => lesson.LessonId == lessonId) ?? new LessonEntity()));
+        }
+        catch
+        {
+            return Result<LessonDto>.Failure(new Error(ErrorType.ServerError, "Can't get lesson"));
         }
     }
 

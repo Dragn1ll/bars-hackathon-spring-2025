@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DataAccess.Repositories;
 
@@ -23,28 +24,36 @@ public class CourseRepository(AppDbContext context) :
             .Contains(title, StringComparison.CurrentCultureIgnoreCase));
     }
 
-    public async Task<CourseEntity?> GetCourseByIdAsync(int courseId)
+    public async Task<CourseEntity?> GetCourseByIdAsync(Guid courseId)
     {
         return await GetByFilterAsync(e => e.CourseId == courseId);
     }
 
-    public async Task<bool> PatchCourseTitleAsync(int courseId, string newTitle)
+    public async Task<bool> PatchCourseTitleAsync(Guid courseId, string newTitle)
     {
         return await PatchAsync(courseId, e => e.Title = newTitle);
     }
 
-    public async Task<bool> PatchCourseDescriptionAsync(int courseId, string newDescription)
+    public async Task<bool> PatchCourseDescriptionAsync(Guid courseId, string newDescription)
     {
         return await PatchAsync(courseId, e => e.Description = newDescription);
     }
 
-    public async Task<bool> PatchDeleteStatusAsync(int courseId)
+    public async Task<bool> PatchDeleteStatusAsync(Guid courseId)
     {
         return await PatchAsync(courseId, e => e.IsDeleted = !e.IsDeleted);
     }
 
-    public async Task<bool> DeleteCourseAsync(int courseId)
+    public async Task<bool> DeleteCourseAsync(Guid courseId)
     {
         return await DeleteAsync(e => e.CourseId == courseId);
+    }
+
+    public async Task<CourseEntity?> GetCourseWithModules(Guid courseId)
+    {
+        return await context.Set<CourseEntity>()
+            .AsNoTracking()
+            .Include(course => course.Modules)
+            .FirstOrDefaultAsync(course => course.CourseId == courseId);
     }
 }

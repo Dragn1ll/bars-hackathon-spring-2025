@@ -7,5 +7,5 @@ namespace Domain.Abstractions.Services;
 public interface IQuizOptionService
 {
     Task<Result<AdminQuestionOptionResponseDto>> AddQuizOption(CreateQuestionOptionDto quizOption);
-    Task<Result> DeleteQuizOption(int quizOptionId);
+    Task<Result> DeleteQuizOption(Guid quizOptionId);
 }

@@ -1,5 +1,4 @@
-using Domain.Entities;
-using Domain.Utils;
+using Domain.Abstractions.Repositories;
 
 namespace Domain.Abstractions.Services;
 

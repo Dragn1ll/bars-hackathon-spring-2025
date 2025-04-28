@@ -2,9 +2,9 @@ namespace Domain.Entities;
 
 public class LessonContentEntity
 {
-    public int Id { get; set; }
+    public Guid LessonContentId { get; set; }
     public Guid FileId { get; set; }
-    public int LessonId { get; set; }
+    public Guid LessonId { get; set; }
     public LessonEntity Lesson { get; set; }
     public int LessonContentTypeId { get; set; }
     public LessonContentTypeEntity Type { get; set; }

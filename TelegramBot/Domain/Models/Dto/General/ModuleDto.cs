@@ -1,5 +1,6 @@
 ﻿namespace Domain.Models.Dto.General;
 
 public record ModuleDto(
-    int ModuleId,
-    string Title);
+    Guid ModuleId,
+    string Title,
+    List<LessonDto> Lessons);

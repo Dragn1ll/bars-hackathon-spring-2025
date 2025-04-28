@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Http;
 namespace Domain.Models.Dto.Admin;
 
 public record CreateLessonContentDto(
-    int LessonId,
+    Guid LessonId,
     string FileName,
     IFormFile File,
-    LessonContentType ContentType);
+    LessonContentType ContentType
+    );

@@ -1,5 +1,6 @@
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.DataAccess.Repositories;
 
@@ -17,7 +18,7 @@ public class ModuleRepository(AppDbContext context) :
         return await GetAllByFilterAsync(e => e.IsDeleted == true);
     }
 
-    public async Task<IEnumerable<ModuleEntity?>> GetModulesByCourseIdAsync(int courseId)
+    public async Task<IEnumerable<ModuleEntity?>> GetModulesByCourseIdAsync(Guid courseId)
     {
         return await GetAllByFilterAsync(e => e.CourseId == courseId);
     }
@@ -28,23 +29,31 @@ public class ModuleRepository(AppDbContext context) :
             .Contains(title, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    public async Task<ModuleEntity?> GetModuleByIdAsync(int moduleId)
+    public async Task<ModuleEntity?> GetModuleByIdAsync(Guid moduleId)
     {
         return await GetByFilterAsync(e => e.ModuleId == moduleId);
     }
 
-    public async Task<bool> PatchTitleAsync(int moduleId, string newTitle)
+    public async Task<bool> PatchTitleAsync(Guid moduleId, string newTitle)
     {
         return await PatchAsync(moduleId, e => e.Title = newTitle);
     }
 
-    public async Task<bool> PatchDeleteStatusAsync(int moduleId)
+    public async Task<bool> PatchDeleteStatusAsync(Guid moduleId)
     {
         return await PatchAsync(moduleId, e => e.IsDeleted = !e.IsDeleted);
     }
 
-    public async Task<bool> DeleteModuleAsync(int moduleId)
+    public async Task<bool> DeleteModuleAsync(Guid moduleId)
     {
         return await DeleteAsync(e => e.ModuleId == moduleId);
+    }
+
+    public async Task<ModuleEntity?> GetModuleWithLessons(Guid moduleId)
+    {
+        return await context.Set<ModuleEntity>()
+            .AsNoTracking()
+            .Include(e => e.Lessons)
+            .FirstOrDefaultAsync(module => module.ModuleId == moduleId);
     }
 }

@@ -7,22 +7,22 @@ public class UserRepository(AppDbContext context) :
     AbstractRepository<UserEntity>(context), 
     IUserRepository
 {
-    public async Task<bool> PatchUsernameAsync(int userId, string newUsername)
+    public async Task<bool> PatchUsernameAsync(Guid userId, string newUsername)
     {
         return await PatchAsync(userId, e => e.Username = newUsername);
     }
 
-    public async Task<bool> PatchUserEmailAsync(int userId, string newEmail)
+    public async Task<bool> PatchUserEmailAsync(Guid userId, string newEmail)
     {
         return await PatchAsync(userId, e => e.Email = newEmail);
     }
 
-    public async Task<bool> PatchUserPhoneAsync(int userId, string newPhone)
+    public async Task<bool> PatchUserPhoneAsync(Guid userId, string newPhone)
     {
         return await PatchAsync(userId, e => e.PhoneNumber = newPhone);
     }
 
-    public async Task<bool> PatchUserDeleteStatusAsync(int userId)
+    public async Task<bool> PatchUserDeleteStatusAsync(Guid userId)
     {
         return await PatchAsync(userId, e => e.IsDeleted = !e.IsDeleted);
     }
