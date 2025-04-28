@@ -1,7 +1,7 @@
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
-using Domain.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -11,6 +11,7 @@ namespace Api.Controllers;
 public class LessonController(ILessonService lessonService): ControllerBase
 {
     [HttpPost]
+    [Authorize]
     [Route("/create")]
     public async Task<IActionResult> CreateLesson(CreateLessonDto createLessonDto)
     {
@@ -19,6 +20,7 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpPatch]
+    [Authorize]
     [Route("/update")]
     public async Task<IActionResult> UpdateLesson(LessonDto updateLessonDto)
     {
@@ -27,6 +29,7 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpDelete]
+    [Authorize]
     [Route("/delete/{lessonId:guid}")]
     public async Task<IActionResult> DeleteLesson(Guid lessonId)
     {

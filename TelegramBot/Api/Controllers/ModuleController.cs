@@ -1,6 +1,7 @@
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -10,6 +11,7 @@ namespace Api.Controllers;
 public class ModuleController(IModuleService moduleService): ControllerBase
 {
     [HttpPost]
+    [Authorize]
     [Route("/add")]
     public async Task<IActionResult> CreateModule(CreateModuleDto moduleDto)
     {
@@ -18,6 +20,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpPatch]
+    [Authorize]
     [Route("/update")]
     public async Task<IActionResult> UpdateModule(ModuleDto moduleDto)
     {
@@ -26,6 +29,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpDelete]
+    [Authorize]
     [Route("/delete/{moduleId:guid}")]
     public async Task<IActionResult> DeleteModule(Guid moduleId)
     {
