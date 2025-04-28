@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/courses")]
+[Route("courses")]
 public class CourseController(ICourseService courseService): ControllerBase
 {
     [HttpPost]
     [Authorize]
-    [Route("/add")]
+    [Route("add")]
     public async Task<IActionResult> CreateCourse(CreateCourseDto createCourseDto)
     {
         var result = await courseService.CreateCourse(createCourseDto);
@@ -22,7 +22,7 @@ public class CourseController(ICourseService courseService): ControllerBase
 
     [HttpPatch]
     [Authorize]
-    [Route("/update")]
+    [Route("update")]
     public async Task<IActionResult> UpdateCourse(CourseDto courseDto)
     {
         var result = await courseService.ChangeCourse(courseDto);
@@ -31,7 +31,7 @@ public class CourseController(ICourseService courseService): ControllerBase
 
     [HttpDelete]
     [Authorize]
-    [Route("/delete/{courseId:guid}")]
+    [Route("delete/{courseId:guid}")]
     public async Task<IActionResult> DeleteCourse(Guid courseId)
     {
         var result = await courseService.DeleteCourse(courseId);
@@ -39,7 +39,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
     
     [HttpGet]
-    [Route("/all")]
+    [Route("all")]
     public async Task<IActionResult> GetCourses()
     {
         var result = await courseService.GetAllCourses();
@@ -47,7 +47,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/{courseId:guid}")]
+    [Route("{courseId:guid}")]
     public async Task<IActionResult> GetCourse(Guid courseId)
     {
         var result = await courseService.GetCourseWithModules(courseId);

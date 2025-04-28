@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/quiz/questions")]
+[Route("quiz/questions")]
 public class QuizQuestionController(IQuizQuestionService quizQuestionService): ControllerBase
 {
     [Authorize]
-    [HttpPost("/create")]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateQuizQuestion(CreateQuestionDto questionDto)
     {
         var result = await quizQuestionService.CreateQuizQuestion(questionDto);
@@ -19,21 +19,21 @@ public class QuizQuestionController(IQuizQuestionService quizQuestionService): C
     }
     
     [Authorize]
-    [HttpDelete("/delete/{questionId:guid}")]
+    [HttpDelete("delete/{questionId:guid}")]
     public async Task<IActionResult> DeleteQuizQuestion(Guid questionId)
     {
         var result = await quizQuestionService.DeleteQuizQuestion(questionId);
         return ResultRouter.GetActionResult(result);
     }
 
-    [HttpPost("/next")]
+    [HttpPost("next")]
     public async Task<IActionResult> GetNextQuizQuestions(UserAnswerDtoRequest userAnswerDtoRequest)
     {
         var result = await quizQuestionService.GetNextQuestionForUser(userAnswerDtoRequest);
         return ResultRouter.GetActionResult(result);
     }
     
-    [HttpGet("/{lessonId:guid}/{userId:long}")]
+    [HttpGet("{lessonId:guid}/{userId:long}")]
     public async Task<IActionResult> GetQuizQuestions(Guid lessonId, long userId)
     {
         var result = await quizQuestionService.GetQuizQuestionForUser(lessonId, userId);

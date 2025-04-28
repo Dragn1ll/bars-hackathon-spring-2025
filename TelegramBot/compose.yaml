@@ -6,7 +6,6 @@
       dockerfile: Api/Dockerfile
     ports:
       - "5163:8080"
-    container_name: md_web_api
     env_file:
       - .env
     environment:
