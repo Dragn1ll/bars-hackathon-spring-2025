@@ -20,8 +20,10 @@ public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
                     new Error(ErrorType.BadRequest, "User already exists"));
 
             var user = mapper.Map<RegisterUserDto, UserEntity>(registerUserDto);
+            var result = await unitOfWork.Users.AddAsync(user);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Users.AddAsync(user) 
+            return result 
                 ? Result<UserEntity>.Success(user)
                 : Result<UserEntity>.Failure(
                     new Error(ErrorType.ServerError, "Can't register user"));
@@ -52,8 +54,11 @@ public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
         {
             if (await unitOfWork.Users.GetByFilterAsync(u => u.UserId == userId) == null)
                 return Result.Failure(new Error(ErrorType.NotFound, "User does not exist"));
+
+            var result = await unitOfWork.Users.DeleteAsync(u => u.UserId == userId);
+            await unitOfWork.SaveChangesAsync();
             
-            return await unitOfWork.Users.DeleteAsync(u => u.UserId == userId)
+            return result
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.ServerError, "Can't unregister user"));
         }

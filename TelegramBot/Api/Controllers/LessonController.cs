@@ -1,17 +1,18 @@
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
-using Domain.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/lessons")]
+[Route("lessons")]
 public class LessonController(ILessonService lessonService): ControllerBase
 {
     [HttpPost]
-    [Route("/create")]
+    [Authorize]
+    [Route("create")]
     public async Task<IActionResult> CreateLesson(CreateLessonDto createLessonDto)
     {
         var result = await lessonService.CreateLesson(createLessonDto);
@@ -19,7 +20,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpPatch]
-    [Route("/update")]
+    [Authorize]
+    [Route("update")]
     public async Task<IActionResult> UpdateLesson(LessonDto updateLessonDto)
     {
         var result = await lessonService.UpdateLesson(updateLessonDto);
@@ -27,7 +29,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpDelete]
-    [Route("/delete/{lessonId:guid}")]
+    [Authorize]
+    [Route("delete/{lessonId:guid}")]
     public async Task<IActionResult> DeleteLesson(Guid lessonId)
     {
         var result = await lessonService.DeleteLesson(lessonId);
@@ -35,7 +38,7 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/all/{moduleId:guid}")]
+    [Route("all/{moduleId:guid}")]
     public async Task<IActionResult> GetAllLessons(Guid moduleId)
     {
         var result = await lessonService.GetAllLessons(moduleId);
@@ -43,7 +46,7 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/all/files/{lessonId:guid}")]
+    [Route("files/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonFiles(Guid lessonId)
     {
         var files = await lessonService.GetAllLessonFiles(lessonId);
@@ -51,7 +54,15 @@ public class LessonController(ILessonService lessonService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/{lessonId:guid}")]
+    [Route("files/urls/{lessonId:guid}")]
+    public async Task<IActionResult> GetAllLessonFileUrls(Guid lessonId)
+    {
+        var filesUrls = await lessonService.GetLessonFilesUrls(lessonId);
+        return ResultRouter.GetActionResult(filesUrls);
+    }
+
+    [HttpGet]
+    [Route("{lessonId:guid}")]
     public async Task<IActionResult> GetLesson(Guid lessonId)
     {
         var lesson = await lessonService.GetLesson(lessonId);

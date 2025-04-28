@@ -117,4 +117,25 @@ public class MinioService : IFileStorageService
             return Result<bool>.Failure(new Error(ErrorType.ServerError, "File not found."));
         }
     }
+
+    public async Task<Result<string>> GetFileUrlAsync(string fileName, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var expiryInSeconds = 60;
+
+            var args = new PresignedGetObjectArgs()
+                .WithBucket("your-bucket-name")
+                .WithObject(fileName)
+                .WithExpiry(expiryInSeconds);
+
+            var url = await _minioClient.PresignedGetObjectAsync(args);
+
+            return Result<string>.Success(url);
+        }
+        catch (Exception exception)
+        {
+            return Result<string>.Failure(new Error(ErrorType.ServerError, "Could not get file url"));
+        }
+    }
 }

@@ -1,16 +1,18 @@
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/modules")]
+[Route("modules")]
 public class ModuleController(IModuleService moduleService): ControllerBase
 {
     [HttpPost]
-    [Route("/add")]
+    [Authorize]
+    [Route("add")]
     public async Task<IActionResult> CreateModule(CreateModuleDto moduleDto)
     {
         var module = await moduleService.CreateModule(moduleDto);
@@ -18,7 +20,8 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpPatch]
-    [Route("/update")]
+    [Authorize]
+    [Route("update")]
     public async Task<IActionResult> UpdateModule(ModuleDto moduleDto)
     {
         var module = await moduleService.UpdateModule(moduleDto);
@@ -26,7 +29,8 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpDelete]
-    [Route("/delete/{moduleId:guid}")]
+    [Authorize]
+    [Route("delete/{moduleId:guid}")]
     public async Task<IActionResult> DeleteModule(Guid moduleId)
     {
         var module = await moduleService.DeleteModule(moduleId);
@@ -34,7 +38,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
     
     [HttpGet]
-    [Route("/all/{courseId:int}")]
+    [Route("all/{courseId:guid}")]
     public async Task<IActionResult> GetModules(Guid courseId)
     {
         var modules = await moduleService.GetModules(courseId);
@@ -42,7 +46,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
     }
 
     [HttpGet]
-    [Route("/{moduleId:guid}")]
+    [Route("{moduleId:guid}")]
     public async Task<IActionResult> GetModule(Guid moduleId)
     {
         var modules = await moduleService.GetModuleWithLessons(moduleId);

@@ -2,4 +2,5 @@
 
 public record LessonDto(
     Guid LessonId,
+    Guid ModuleId,
     string Title);

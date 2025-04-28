@@ -5,13 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("/users")]
+[Route("users")]
 public class UserController(IUserService userService): ControllerBase
 {
-    [HttpPost("/register")]
+    [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
     {
         var result = await userService.RegisterAsync(registerUserDto);
         return ResultRouter.GetActionResult(result);
     }
+    
+    
 }

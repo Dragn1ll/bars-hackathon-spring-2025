@@ -13,5 +13,6 @@ public interface ILessonService
     Task<Result> DeleteLesson(Guid lessonId);
     Task<Result<List<LessonDto>>> GetAllLessons(Guid moduleId);
     Task<Result<List<Stream>>> GetAllLessonFiles(Guid lessonId);
+    Task<Result<List<string>>> GetLessonFilesUrls(Guid lessonId);
     Task<Result<LessonDto>> GetLesson(Guid lessonId);
 }
