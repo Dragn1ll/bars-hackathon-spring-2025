@@ -9,28 +9,28 @@ namespace Application.Services;
 
 public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
 {
-    public async Task<Result<Admin>> RegisterAsync(RegisterUserDto registerUserDto)
+    public async Task<Result<UserEntity>> RegisterAsync(RegisterUserDto registerUserDto)
     {
         try
         {
             if (await unitOfWork.Users.GetByFilterAsync(u => u.UserId 
                                                               == registerUserDto.UserId)
                  != null)
-                return Result<Admin>.Failure(
+                return Result<UserEntity>.Failure(
                     new Error(ErrorType.BadRequest, "User already exists"));
 
-            var user = mapper.Map<RegisterUserDto, Admin>(registerUserDto);
+            var user = mapper.Map<RegisterUserDto, UserEntity>(registerUserDto);
             var result = await unitOfWork.Users.AddAsync(user);
             await unitOfWork.SaveChangesAsync();
             
             return result 
-                ? Result<Admin>.Success(user)
-                : Result<Admin>.Failure(
+                ? Result<UserEntity>.Success(user)
+                : Result<UserEntity>.Failure(
                     new Error(ErrorType.ServerError, "Can't register user"));
         }
         catch (Exception exception)
         {
-            return Result<Admin>.Failure(new Error(ErrorType.ServerError, exception.Message));
+            return Result<UserEntity>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
@@ -44,7 +44,7 @@ public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
         }
         catch (Exception exception)
         {
-            return Result<Admin>.Failure(new Error(ErrorType.ServerError, exception.Message));
+            return Result<UserEntity>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
@@ -64,7 +64,7 @@ public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
         }
         catch (Exception exception)
         {
-            return Result<Admin>.Failure(new Error(ErrorType.ServerError, exception.Message));
+            return Result<UserEntity>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 }

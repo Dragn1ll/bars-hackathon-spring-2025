@@ -2,6 +2,6 @@ using Domain.Entities;
 
 namespace Domain.Abstractions.Repositories;
 
-public interface IUserRepository: IRepository<Admin>
+public interface IUserRepository: IRepository<UserEntity>
 {
 }

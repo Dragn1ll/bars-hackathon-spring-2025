@@ -6,7 +6,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("admin")]
-public class AdminController(IAdminService adminService, HttpContext context) : ControllerBase
+public class AdminController(IAdminService adminService) : ControllerBase
 {
     [HttpPost("register")]
     public async Task<IActionResult> Register(AdminLoginRegisterRequestDto adminRegisterRequestDto)
@@ -21,7 +21,7 @@ public class AdminController(IAdminService adminService, HttpContext context) : 
         var result = await adminService.Login(adminLoginRequestDto);
         
         if (result.IsSuccess)
-            context.Response.Cookies.Append("jwt-secret", result.Value!);
+            HttpContext.Response.Cookies.Append("jwt-secret", result.Value!);
         
         return ResultRouter.GetActionResult(result);
     }
