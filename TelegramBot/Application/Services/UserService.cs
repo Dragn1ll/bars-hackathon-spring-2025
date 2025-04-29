@@ -38,6 +38,7 @@ public class UserService(IUnitOfWork unitOfWork, Mapper mapper): IUserService
     {
         try
         {
+            Console.WriteLine(userId);
             return await unitOfWork.Users.GetByFilterAsync(u => u.UserId == userId) != null 
                 ? Result.Success()
                 : Result.Failure(new Error(ErrorType.NotFound, "User does not exist"));

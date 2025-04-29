@@ -307,6 +307,7 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             await botClient.EditMessageText(
                 chatId: callbackQuery.Message!.Chat.Id,
                 messageId: callbackQuery.Message!.MessageId,
+                parseMode: ParseMode.Markdown,
                 replyMarkup: inlineKeyboardMarkup,
                 text: $"*{lesson.Title}*",
                 cancellationToken: cancelToken);
@@ -376,6 +377,7 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             await botClient.EditMessageText(
                 chatId: callbackQuery.Message!.Chat.Id,
                 messageId: callbackQuery.Message!.MessageId,
+                parseMode: ParseMode.Markdown,
                 replyMarkup: inlineKeyboardMarkup,
                 text: $"*{question.QuestionText}*",
                 cancellationToken: cancelToken);

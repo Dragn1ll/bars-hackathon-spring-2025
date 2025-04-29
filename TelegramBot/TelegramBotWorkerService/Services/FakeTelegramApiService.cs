@@ -18,7 +18,7 @@ public class FakeTelegramApiService : ITelegramApiService
     new(Modules[1].CourseId, "Курс 2", "Описание 2", Modules)];
     
     
-    public Task RegisterUser(string phoneNumber, long userId)
+    public Task RegisterUser(string phoneNumber, long? userId)
     {
         Console.WriteLine($"Registered user {phoneNumber}");
         return Task.CompletedTask;

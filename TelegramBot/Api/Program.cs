@@ -80,14 +80,12 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = service.GetRequiredService<AppDbContext>();
-        logger.LogInformation("Applying migrations...");
         context.Database.Migrate();
-        logger.LogInformation("Migrations applied successfully!");
     }
     catch (Exception ex)
     {
         logger.LogCritical(ex, "Failed to apply migrations!");
-        throw; // Прерываем запуск приложения, если миграции не применились
+        throw;
     }
 }
 

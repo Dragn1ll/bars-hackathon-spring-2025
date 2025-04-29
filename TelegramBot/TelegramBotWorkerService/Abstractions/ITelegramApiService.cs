@@ -7,7 +7,7 @@ namespace TelegramBotWorkerService.Abstractions;
 
 public interface ITelegramApiService
 {
-    Task RegisterUser(string phoneNumber, long userId);
+    Task RegisterUser(string phoneNumber, long? userId);
     Task<List<CourseDto>?> GetCourses(long userId);
     Task<CourseDto?> GetCourse(long userId, Guid courseId);
     Task<ModuleDto?> GetModule(long userId, Guid moduleId);
