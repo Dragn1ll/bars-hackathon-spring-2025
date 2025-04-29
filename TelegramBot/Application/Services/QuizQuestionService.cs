@@ -14,8 +14,20 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
     {
         try
         {
-            var entity = mapper.Map<CreateQuestionDto, QuizQuestionEntity>(quizQuestion);
-            entity.QuestionId = Guid.NewGuid();
+            var entity = new QuizQuestionEntity
+            {
+                LessonId = quizQuestion.LessonId,
+                QuestionId = Guid.NewGuid(),
+                QuestionText = quizQuestion.QuestionText,
+                QuizOptions = quizQuestion.Answers.Select(qo => new QuizOptionEntity
+                {
+                    OptionId = Guid.NewGuid(),
+                    Text = qo.Answer,
+                    IsCorrect = qo.IsCorrect
+                }).ToList()
+            };
+            
+            entity.QuizOptions.Select(qo => qo.QuestionId = entity.QuestionId);
 
             var result = await unitOfWork.QuizQuestions.AddAsync(entity);
             await unitOfWork.SaveChangesAsync();
@@ -68,7 +80,7 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                     new Error(ErrorType.NotFound, "Lesson not found."));
 
             var question = await unitOfWork.QuizQuestions
-                .GetByFilterAsync(q => q.LessonId == lessonId);
+                .GetQuestionWithOptions(lessonId);
             
             if (question == null)
                 return Result<BotQuestionResponseDto>.Failure(
@@ -110,8 +122,11 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
             var nextQuestion = await unitOfWork.QuizQuestions
                 .GetByFilterAsync(q => q.QuestionId > userAnswerDto.QuestionId);
             
-            return Result<BotQuestionResponseDto>.Success(new BotQuestionResponseDto(nextQuestion!.QuestionId, 
-                nextQuestion.QuestionText, nextQuestion.QuizOptions
+            var nextQuestionWithOptions = await unitOfWork.QuizQuestions
+                .GetQuestionWithOptions(userAnswerDto.QuestionId); 
+            
+            return Result<BotQuestionResponseDto>.Success(new BotQuestionResponseDto(nextQuestionWithOptions!.QuestionId, 
+                nextQuestionWithOptions.QuestionText, nextQuestionWithOptions.QuizOptions
                     .Select(qo => new BotAnswerResponseDto(qo.OptionId, qo.Text)).ToList()));
         }
         catch (Exception exception)

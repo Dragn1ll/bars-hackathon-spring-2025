@@ -53,7 +53,7 @@ public class TelegramApiService(HttpClient client): ITelegramApiService
         request.Headers.Add("X-User-Id", userId.ToString());
         request.Content = new StringContent(
             JsonSerializer.Serialize(
-                new UserAnswerDtoRequest(userId, questionId, answerId)));
+                new UserAnswerDtoRequest(userId, questionId ?? Guid.Empty, answerId)));
         var result = await client.SendAsync(request);
         switch (result.StatusCode)
         {
