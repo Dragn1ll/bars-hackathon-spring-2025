@@ -30,7 +30,7 @@ public static class ApiExtensions
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["jwt-cookies"];
+                        context.Token = context.Request.Cookies["jwt-secret"];
 
                         return Task.CompletedTask;
                     }

@@ -73,15 +73,18 @@ app.UseCookiePolicy(new CookiePolicyOptions
 using (var scope = app.Services.CreateScope())
 {
     var service = scope.ServiceProvider;
+    var logger = service.GetRequiredService<ILogger<Program>>();
     try
     {
         var context = service.GetRequiredService<AppDbContext>();
+        logger.LogInformation("Applying migrations...");
         context.Database.Migrate();
+        logger.LogInformation("Migrations applied successfully!");
     }
     catch (Exception ex)
     {
-        var logger = service.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ошибка при применении миграций.");
+        logger.LogCritical(ex, "Failed to apply migrations!");
+        throw; // Прерываем запуск приложения, если миграции не применились
     }
 }
 

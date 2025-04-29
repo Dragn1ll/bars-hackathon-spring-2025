@@ -27,7 +27,7 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
             await unitOfWork.SaveChangesAsync();
             
             return result 
-                ? Result<ModuleDto>.Success(mapper.Map<CreateModuleDto, ModuleDto>(module)) 
+                ? Result<ModuleDto>.Success(mapper.Map<ModuleEntity, ModuleDto>(entity)) 
                 : Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, "Can't create module")); 
         }
         catch (Exception exception)
