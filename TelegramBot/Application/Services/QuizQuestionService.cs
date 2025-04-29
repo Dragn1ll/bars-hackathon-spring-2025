@@ -92,7 +92,7 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
             if (question == null)
                 return Result<BotQuestionResponseDto>.Failure(
                     new Error(ErrorType.NotFound, "Question not found."));
-
+            
             return Result<BotQuestionResponseDto>.Success(new BotQuestionResponseDto
             (
                 question.QuestionId, question.QuestionText, 
@@ -126,11 +126,19 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                     .OptionId == userAnswerDto.AnswerId
             });
             
+            var answeredQuestions = await unitOfWork.AnsweredQuestionsRepository
+                .GetAllByFilterAsync(q => q.QuestionId == userAnswerDto.QuestionId);
+            
             var nextQuestion = await unitOfWork.QuizQuestions
-                .GetByFilterAsync(q => q.QuestionId > userAnswerDto.QuestionId);
+                .GetByFilterAsync(q => !answeredQuestions.Any(aq => q.QuestionId == aq.QuestionId));
+
+            if (nextQuestion == null)
+            {
+                return Result<BotQuestionResponseDto>.Failure(new Error(ErrorType.NotFound, "Question not found."));
+            }
             
             var nextQuestionWithOptions = await unitOfWork.QuizQuestions
-                .GetQuestionWithOptions(userAnswerDto.QuestionId); 
+                .GetQuestionWithOptions(nextQuestion.QuestionId); 
             
             return Result<BotQuestionResponseDto>.Success(new BotQuestionResponseDto(nextQuestionWithOptions!.QuestionId, 
                 nextQuestionWithOptions.QuestionText, nextQuestionWithOptions.QuizOptions

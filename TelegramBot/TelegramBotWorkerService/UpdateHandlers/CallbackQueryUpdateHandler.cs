@@ -478,13 +478,17 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
                 });
             await botClient.DeleteMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
-                messageId: callbackQuery.Message!.MessageId, 
+                messageId: callbackQuery.Message!.MessageId,
                 cancellationToken: cancelToken);
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
                 text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
                 replyMarkup: replyMarkup,
                 cancellationToken: cancelToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
     }
 }

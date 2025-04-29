@@ -49,7 +49,7 @@ public class TelegramApiService(HttpClient client): ITelegramApiService
 
     public async Task<BotQuestionResponseDto?> SendAnswer(long userId, Guid answerId, Guid? questionId = null)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "next");
+        var request = new HttpRequestMessage(HttpMethod.Post, "quiz/questions/next");
         request.Headers.Add("X-User-Id", userId.ToString());
         request.Content = new StringContent(
             JsonSerializer.Serialize(
