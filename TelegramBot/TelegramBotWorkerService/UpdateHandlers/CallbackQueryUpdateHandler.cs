@@ -292,8 +292,8 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             var fileUrls = await _apiService.GetLessonContent(callbackQuery.From.Id, lessonId);
             if (lesson == null || fileUrls == null)
                 return;
-            await using var longReadFileStream = File.OpenRead("D:\\2ndCourse\\bars-hackathon-spring-2025\\TelegramBot\\TelegramBotWorkerService\\Files\\1 Лонгрид. тайм-менеджмент тим лида.docx");
-            await using var pdfFileStream = File.OpenRead("D:\\2ndCourse\\bars-hackathon-spring-2025\\TelegramBot\\TelegramBotWorkerService\\Files\\Книги\\Сверх продуктивность, Михаил Алистер.pdf");
+            await using var longReadFileStream = File.OpenRead("Files/1 Лонгрид. тайм-менеджмент тим лида.docx");
+            await using var pdfFileStream = File.OpenRead("Files/Книги/Сверх продуктивность, Михаил Алистер.pdf");
             InputMediaDocument[] inputDocuments = [new(longReadFileStream), new(pdfFileStream)];
             var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(new InlineKeyboardButton
                 {

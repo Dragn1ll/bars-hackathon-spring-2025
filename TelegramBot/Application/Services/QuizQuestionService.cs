@@ -26,9 +26,12 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                     IsCorrect = qo.IsCorrect
                 }).ToList()
             };
-            
-            entity.QuizOptions.Select(qo => qo.QuestionId = entity.QuestionId);
 
+            foreach (var option in entity.QuizOptions)
+            {
+                option.QuestionId = entity.QuestionId;
+            }
+            
             var result = await unitOfWork.QuizQuestions.AddAsync(entity);
             await unitOfWork.SaveChangesAsync();
             
@@ -79,8 +82,12 @@ public class QuizQuestionService(IUnitOfWork unitOfWork, Mapper mapper) : IQuizQ
                 return Result<BotQuestionResponseDto>.Failure(
                     new Error(ErrorType.NotFound, "Lesson not found."));
 
+            var idQuestion = ((await unitOfWork.QuizQuestions
+                    .GetByFilterAsync(e => e.LessonId == lessonId))!)
+                .QuestionId;
+            
             var question = await unitOfWork.QuizQuestions
-                .GetQuestionWithOptions(lessonId);
+                .GetQuestionWithOptions(idQuestion);
             
             if (question == null)
                 return Result<BotQuestionResponseDto>.Failure(
