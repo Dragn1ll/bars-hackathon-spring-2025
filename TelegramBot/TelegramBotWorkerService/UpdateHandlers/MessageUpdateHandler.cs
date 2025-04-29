@@ -86,16 +86,26 @@ public class MessageUpdateHandler : ICustomUpdateHandler
     [ContactHandler]
     public async Task Register(ITelegramBotClient botClient, Contact contact, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Номер: {contact.PhoneNumber}");
-        await botClient.SendMessage(contact.UserId!, 
-            "Вы успешно зарегестрировались!",
-            replyMarkup: ReplyMarkupHelper.CreateKeyboard("Курсы")
-                .CreateKeyboardMarkup(new ReplyKeyboardOptions
-                {
-                    ResizeKeyboard = true,
-                    OneTimeKeyboard = false
-                }),
-            cancellationToken: cancellationToken);
+        try
+        {
+            await _apiService.RegisterUser(contact.PhoneNumber, contact.UserId);
+            await botClient.SendMessage(contact.UserId!, 
+                "Вы успешно зарегестрировались!",
+                replyMarkup: ReplyMarkupHelper.CreateKeyboard("Курсы")
+                    .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                    {
+                        ResizeKeyboard = true,
+                        OneTimeKeyboard = false
+                    }),
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception e)
+        {
+            await botClient.SendMessage(contact.UserId!, 
+                "Не удалась регистрация...",
+                cancellationToken: cancellationToken);
+        }
+        
     }
 
     [Command("Курсы")]

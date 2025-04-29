@@ -32,7 +32,8 @@ public static class ReplyMarkupHelper
         return existingButtonRows.Concat([buttonsToAdd]).ToArray();
     }
 
-    public static ReplyKeyboardMarkup CreateKeyboardMarkup(this KeyboardButton[][] buttonRows, ReplyKeyboardOptions? options = null)
+    public static ReplyKeyboardMarkup CreateKeyboardMarkup(this KeyboardButton[][] buttonRows, 
+        ReplyKeyboardOptions? options = null)
     {
         var customOptions = options ?? ReplyKeyboardOptions.DefaultOptions;
         return new ReplyKeyboardMarkup(buttonRows)
