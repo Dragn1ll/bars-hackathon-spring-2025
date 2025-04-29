@@ -2,6 +2,6 @@ namespace Domain.Models.Dto.Admin;
 
 public record CreateQuestionDto(
     Guid LessonId,
-    string Question,
+    string QuestionText,
     List<CreateQuestionOptionDto> Answers
     );

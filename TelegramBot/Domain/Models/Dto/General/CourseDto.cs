@@ -4,4 +4,4 @@ public record CourseDto(
     Guid CourseId,
     string Title,
     string Description,
-    List<ModuleDto> Modules);
+    List<ModuleDto>? Modules);

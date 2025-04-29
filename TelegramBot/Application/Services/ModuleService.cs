@@ -102,13 +102,21 @@ public class ModuleService(IUnitOfWork unitOfWork, Mapper mapper) : IModuleServi
                 return Result<ModuleDto>.Failure(
                     new Error(ErrorType.NotFound, "Module already not exists"));
 
-            return Result<ModuleDto>.Success(
-                mapper.Map<ModuleEntity, ModuleDto>(await unitOfWork.Modules
-                    .GetModuleWithLessons(moduleId) ?? new ModuleEntity()));
+            var module = await unitOfWork.Modules
+                .GetModuleWithLessons(moduleId) ?? new ModuleEntity();
+            var result = new ModuleDto
+            (
+                module.ModuleId,
+                module.CourseId,
+                module.Title,
+                module.Lessons.Select(lesson => new LessonDto(lesson.LessonId, lesson.ModuleId, lesson.Title))
+                    .ToList()
+            );
+            return Result<ModuleDto>.Success(result);
         }
-        catch
+        catch(Exception ex)
         {
-            return Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, "Can't get module"));
+            return Result<ModuleDto>.Failure(new Error(ErrorType.ServerError, ex.Message ));
         }
     }
 

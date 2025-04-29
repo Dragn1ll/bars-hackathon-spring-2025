@@ -19,7 +19,7 @@ public class TelegramApiService(HttpClient client): ITelegramApiService
 
     public async Task<List<CourseDto>?> GetCourses(long userId)
     {
-        return await GetAsync<List<CourseDto>>("courses", userId);
+        return await GetAsync<List<CourseDto>>("courses/all", userId);
     }
 
     public async Task<CourseDto?> GetCourse(long userId, Guid courseId)
@@ -29,7 +29,7 @@ public class TelegramApiService(HttpClient client): ITelegramApiService
 
     public async Task<ModuleDto?> GetModule(long userId, Guid moduleId)
     {
-        return await GetAsync<ModuleDto>($"module/{moduleId}", userId);
+        return await GetAsync<ModuleDto>($"modules/{moduleId}", userId);
     }
 
     public async Task<LessonDto?> GetLesson(long userId, Guid lessonId)

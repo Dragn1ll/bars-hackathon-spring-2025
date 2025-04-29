@@ -105,10 +105,11 @@ public class CourseService(IUnitOfWork unitOfWork, Mapper mapper) : ICourseServi
         {
             if (!await ThereIsACourse(c => c.CourseId == courseId))
                 return Result<CourseDto>.Failure(new Error(ErrorType.BadRequest, "Course does not exist"));
-            
-            return Result<CourseDto>.Success(
-                mapper.Map<CourseEntity, CourseDto>(await unitOfWork.Courses
-                    .GetCourseWithModules(courseId) ?? new CourseEntity()));
+
+            var course = await unitOfWork.Courses
+                .GetCourseWithModules(courseId) ?? new CourseEntity();
+            var result = new CourseDto(course.CourseId, course.Title, course.Description, course.Modules.Select(module => new ModuleDto(module.ModuleId, module.CourseId, module.Title,null)).ToList());
+            return Result<CourseDto>.Success(result);
         }
         catch (Exception exception)
         {
