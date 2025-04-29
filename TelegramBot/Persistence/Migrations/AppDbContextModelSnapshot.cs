@@ -22,39 +22,6 @@ namespace Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Admin", b =>
-                {
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
-                    b.ToTable("users", (string)null);
-                });
-
             modelBuilder.Entity("Domain.Entities.AdminEntity", b =>
                 {
                     b.Property<Guid>("AdminId")
@@ -283,6 +250,26 @@ namespace Persistence.Migrations
                     b.ToTable("UserCompletedLessonEntity");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UserEntity", b =>
+                {
+                    b.Property<long>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("UserId"));
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.ToTable("users", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.LessonContentEntity", b =>
                 {
                     b.HasOne("Domain.Entities.LessonEntity", "Lesson")
@@ -346,7 +333,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Admin", "User")
+                    b.HasOne("Domain.Entities.UserEntity", "User")
                         .WithMany("Answers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -365,7 +352,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Admin", "User")
+                    b.HasOne("Domain.Entities.UserEntity", "User")
                         .WithMany("CompletedLessons")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -374,13 +361,6 @@ namespace Persistence.Migrations
                     b.Navigation("Lesson");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Admin", b =>
-                {
-                    b.Navigation("Answers");
-
-                    b.Navigation("CompletedLessons");
                 });
 
             modelBuilder.Entity("Domain.Entities.CourseEntity", b =>
@@ -407,6 +387,13 @@ namespace Persistence.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("QuizOptions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("CompletedLessons");
                 });
 #pragma warning restore 612, 618
         }

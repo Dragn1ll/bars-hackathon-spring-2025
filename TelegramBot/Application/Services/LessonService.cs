@@ -95,18 +95,19 @@ public class LessonService(IUnitOfWork unitOfWork, Mapper mapper, IFileStorageSe
         }
     }
 
-    public async Task<Result<List<Stream>>> GetAllLessonFiles(Guid lessonId)
+    public async Task<Result<List<byte[]>>> GetAllLessonFiles(Guid lessonId)
     {
         try
         {
-            return Result<List<Stream>>.Success((await unitOfWork.LessonContents
+            return Result<List<byte[]>>.Success((await unitOfWork.LessonContents
                     .GetAllByFilterAsync(l => l.LessonId == lessonId))
-                .Select(lc => storageService.DownloadFileAsync(lc.LessonContentId + "_" + lc.FileName).Result.Value)
+                .Select(lc => ((MemoryStream)storageService
+                    .DownloadFileAsync(lc.LessonContentId + "_" + lc.FileName).Result.Value).ToArray())
                 .ToList());
         }
         catch (Exception exception)
         {
-            return Result<List<Stream>>.Failure(new Error(ErrorType.ServerError, exception.Message));
+            return Result<List<byte[]>>.Failure(new Error(ErrorType.ServerError, exception.Message));
         }
     }
 
