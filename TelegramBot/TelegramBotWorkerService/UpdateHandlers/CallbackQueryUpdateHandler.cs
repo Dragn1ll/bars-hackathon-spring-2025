@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Domain.Models.Dto.General;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -56,17 +57,20 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
     public async Task GetCourses(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
-        var inlineKeyboardButtons = (await _apiService.GetCourses())
-            .Select(course => new InlineKeyboardButton
-            {
-                Text = course.Title,
-                CallbackData = $"course#{course.CourseId}"
-            })
-            .ToArray();
-        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
-            .CreateInlineKeyboardMarkup();
         try
         {
+            var courses = await _apiService.GetCourses(callbackQuery.From.Id);
+            if (courses == null)
+                return;
+            var inlineKeyboardButtons = courses
+                .Select(course => new InlineKeyboardButton
+                {
+                    Text = course.Title,
+                    CallbackData = $"course#{course.CourseId}"
+                })
+                .ToArray();
+            var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
+                .CreateInlineKeyboardMarkup();
             await botClient.EditMessageText(
                 chatId: callbackQuery.Message!.Chat.Id,
                 messageId: callbackQuery.Message!.MessageId,
@@ -74,16 +78,41 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
                 text: $"Список курсов",
                 cancellationToken: cancelToken);
         }
-        catch (Exception e)
+        catch (HttpRequestException)
         {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Извините, курсов не найдено",
+                cancellationToken: cancelToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
             await botClient.DeleteMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
                 messageId: callbackQuery.Message!.MessageId, 
                 cancellationToken: cancelToken);
             await botClient.SendMessage(
                 chatId: callbackQuery.Message!.Chat.Id,
-                replyMarkup: inlineKeyboardMarkup,
-                text: $"Список курсов",
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
                 cancellationToken: cancelToken);
         }
         
@@ -93,41 +122,126 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
     public async Task GetCourse(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
-        var courseId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
-        var course = await _apiService.GetCourse(courseId);
-        if (course == null)
-            return;
-        var inlineKeyboardButtons = course.Modules
-            .Select(module => new InlineKeyboardButton
-            {
-                Text = module.Title,
-                CallbackData = $"module#{module.ModuleId}"
-            })
-            .ToArray();
-        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
-            .AddInlineKeyboardRow(new InlineKeyboardButton
-            {
-                Text = "Назад",
-                CallbackData = "courses"
-            })
-            .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageText(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            text: $"*{course.Title}*\n_{course.Description}_",
-            parseMode: ParseMode.Markdown,
-            cancellationToken: cancelToken);
+        try
+        {
+            var courseId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+            var course = await _apiService.GetCourse(callbackQuery.From.Id, courseId);
+            if (course == null)
+                return;
+            var inlineKeyboardButtons = course.Modules
+                .Select(module => new InlineKeyboardButton
+                {
+                    Text = module.Title,
+                    CallbackData = $"module#{module.ModuleId}"
+                })
+                .ToArray();
+            var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
+                .AddInlineKeyboardRow(new InlineKeyboardButton
+                {
+                    Text = "Назад",
+                    CallbackData = "courses"
+                })
+                .CreateInlineKeyboardMarkup();
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{course.Title}*\n_{course.Description}_",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancelToken);
+        }
+        catch (HttpRequestException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Извините, такого курса не найдено",
+                cancellationToken: cancelToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
+                cancellationToken: cancelToken);
+        }
     }
     
     [Command("module")]
     public async Task GetModule(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
+        ModuleDto? module;
         var moduleId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
-        var module = await _apiService.GetModule(moduleId);
-        if (module == null)
+        try
+        {
+            module = await _apiService.GetModule(callbackQuery.From.Id, moduleId);
+            if (module == null)
+                return;
+        }
+        catch (HttpRequestException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
             return;
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Извините, модуль не найден",
+                cancellationToken: cancelToken);
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
+                cancellationToken: cancelToken);
+            return;
+        }
+            
         var inlineKeyboardButtons = module.Lessons
             .Select(lesson => new InlineKeyboardButton
             {
@@ -139,41 +253,234 @@ public class CallbackQueryUpdateHandler: ICustomUpdateHandler
             .AddInlineKeyboardRow(new InlineKeyboardButton
             {
                 Text = "Назад",
-                CallbackData = "courses"
+                CallbackData = $"course#{module.CourseId}"
             })
             .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageText(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            text: $"*{module.Title}*",
-            parseMode: ParseMode.Markdown,
-            cancellationToken: cancelToken);
+        try
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{module.Title}*",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancelToken);
+        }
+        catch (Exception)
+        {
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{module.Title}*",
+                parseMode: ParseMode.Markdown,
+                cancellationToken: cancelToken);
+        }
     }
     
     [Command("lesson")]
     public async Task GetLesson(ITelegramBotClient botClient, CallbackQuery callbackQuery,
         CancellationToken cancelToken)
     {
-        var lessonId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
-        var lesson = await _apiService.GetLesson(lessonId);
-        if (lesson == null)
-            return;
-        var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(new InlineKeyboardButton
-            {
-                Text = "Назад",
-                CallbackData = "courses"
-            })
-            .CreateInlineKeyboardMarkup();
-        await botClient.EditMessageMedia(
-            chatId: callbackQuery.Message!.Chat.Id,
-            messageId: callbackQuery.Message!.MessageId,
-            replyMarkup: inlineKeyboardMarkup,
-            media:  new InputMediaDocument(InputFile.FromUri("https://avatars.mds.yandex.net/i?id=85bf7002b221dd0843622a3df5b9e273_l-10471914-images-thumbs&n=13"))
-            {
-                Caption = $"*_{lesson.Title}_*",
-                ParseMode = ParseMode.MarkdownV2
-            },
-            cancellationToken: cancelToken);
+        try
+        {
+            var lessonId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+            var lesson = await _apiService.GetLesson(callbackQuery.From.Id, lessonId);
+            var fileUrls = await _apiService.GetLessonContent(callbackQuery.From.Id, lessonId);
+            if (lesson == null || fileUrls == null)
+                return;
+            var inputDocuments = fileUrls.Select(f => new InputMediaDocument(InputFile.FromUri(f)));
+            var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(new InlineKeyboardButton
+                {
+                    Text = "Назад",
+                    CallbackData = $"module#{lesson.ModuleId}"
+                },
+                new InlineKeyboardButton
+                {
+                    Text = "Начать тест",
+                    CallbackData = $"start-test#{lesson.LessonId}"
+                })
+                .CreateInlineKeyboardMarkup();
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{lesson.Title}*",
+                cancellationToken: cancelToken);
+            await botClient.SendMediaGroup(
+                chatId: callbackQuery.Message!.Chat.Id,
+                media: inputDocuments,
+                cancellationToken: cancelToken);
+        }
+        catch (HttpRequestException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Извините, урок не найден",
+                cancellationToken: cancelToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
+                cancellationToken: cancelToken);
+        }
+    }
+
+    [Command("start-test")]
+    public async Task StartTest(ITelegramBotClient botClient, CallbackQuery callbackQuery,
+        CancellationToken cancelToken)
+    {
+        try
+        {
+            var lessonId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+            var question = await _apiService.StartTest(callbackQuery.From.Id, lessonId);
+            if (question == null)
+                return;
+            var inlineKeyboardButtons = question.Answers
+                .Select(answer => new InlineKeyboardButton
+                {
+                    Text = answer.Text,
+                    CallbackData = $"next#{answer.AnswerId}"
+                })
+                .ToArray();
+            var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
+                .CreateInlineKeyboardMarkup();
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{question.QuestionText}*",
+                cancellationToken: cancelToken);
+        }
+        catch (HttpRequestException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Вы прошли тест",
+                cancellationToken: cancelToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
+                cancellationToken: cancelToken);
+        }
+    }
+    
+    [Command("next")]
+    public async Task AnswerNextQuestion(ITelegramBotClient botClient, CallbackQuery callbackQuery,
+        CancellationToken cancelToken)
+    {
+        try
+        {
+            var answerId = Guid.Parse(callbackQuery.Data!.Split('#')[1]);
+            var newQuestion = await _apiService.SendAnswer(callbackQuery.From.Id, answerId);
+            if (newQuestion == null)
+                return;
+            var inlineKeyboardButtons = newQuestion.Answers
+                .Select(answer => new InlineKeyboardButton
+                {
+                    Text = answer.Text,
+                    CallbackData = $"next#{answer.AnswerId}"
+                })
+                .ToArray();
+            var inlineKeyboardMarkup = ReplyMarkupHelper.CreateInlineKeyboard(inlineKeyboardButtons)
+                .CreateInlineKeyboardMarkup();
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                replyMarkup: inlineKeyboardMarkup,
+                text: $"*{newQuestion.QuestionText}*",
+                cancellationToken: cancelToken);
+        }
+        catch (HttpRequestException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Ошибка на стороне сервера, пожалуйста, запросите курсы еще раз",
+                cancellationToken: cancelToken);
+        }
+        catch (KeyNotFoundException)
+        {
+            await botClient.EditMessageText(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId,
+                text: "Вы прошли тест",
+                cancellationToken: cancelToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            var requestContactButton = KeyboardButton.WithRequestContact("Зарегистрироваться");
+            var replyMarkup = ReplyMarkupHelper.CreateKeyboard(requestContactButton)
+                .CreateKeyboardMarkup(new ReplyKeyboardOptions
+                {
+                    ResizeKeyboard = true,
+                    IsPersistent = true,
+                    InputFieldPlaceholder = "Зарегистрируйтесь",
+                    OneTimeKeyboard = true
+                });
+            await botClient.DeleteMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                messageId: callbackQuery.Message!.MessageId, 
+                cancellationToken: cancelToken);
+            await botClient.SendMessage(
+                chatId: callbackQuery.Message!.Chat.Id,
+                text: "Вас нет в системе, пожалуйста, попробуйте зарегистрироваться",
+                replyMarkup: replyMarkup,
+                cancellationToken: cancelToken);
+        }
     }
 }

@@ -101,7 +101,7 @@ public class MessageUpdateHandler : ICustomUpdateHandler
     [Command("Курсы")]
     public async Task GetCourses(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
     {
-        var inlineKeyboardButtons = (await _apiService.GetCourses())
+        var inlineKeyboardButtons = (await _apiService.GetCourses(message.From!.Id))
             .Select(course => new InlineKeyboardButton
             {
                 Text = course.Title,
