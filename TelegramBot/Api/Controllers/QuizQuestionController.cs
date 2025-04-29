@@ -1,3 +1,4 @@
+using Api.Filters;
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.Bot;
@@ -25,7 +26,8 @@ public class QuizQuestionController(IQuizQuestionService quizQuestionService): C
         var result = await quizQuestionService.DeleteQuizQuestion(questionId);
         return ResultRouter.GetActionResult(result);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpPost("next")]
     public async Task<IActionResult> GetNextQuizQuestions(UserAnswerDtoRequest userAnswerDtoRequest)
     {
@@ -33,6 +35,7 @@ public class QuizQuestionController(IQuizQuestionService quizQuestionService): C
         return ResultRouter.GetActionResult(result);
     }
     
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet("{lessonId:guid}/{userId:long}")]
     public async Task<IActionResult> GetQuizQuestions(Guid lessonId, long userId)
     {

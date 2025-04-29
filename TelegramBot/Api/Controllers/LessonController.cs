@@ -1,3 +1,4 @@
+using Api.Filters;
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
@@ -36,7 +37,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
         var result = await lessonService.DeleteLesson(lessonId);
         return ResultRouter.GetActionResult(result);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("all/{moduleId:guid}")]
     public async Task<IActionResult> GetAllLessons(Guid moduleId)
@@ -44,7 +46,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
         var result = await lessonService.GetAllLessons(moduleId);
         return ResultRouter.GetActionResult(result);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("files/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonFiles(Guid lessonId)
@@ -52,7 +55,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
         var files = await lessonService.GetAllLessonFiles(lessonId);
         return ResultRouter.GetActionResult(files);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("files/urls/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonFileUrls(Guid lessonId)
@@ -60,7 +64,8 @@ public class LessonController(ILessonService lessonService): ControllerBase
         var filesUrls = await lessonService.GetLessonFilesUrls(lessonId);
         return ResultRouter.GetActionResult(filesUrls);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("{lessonId:guid}")]
     public async Task<IActionResult> GetLesson(Guid lessonId)

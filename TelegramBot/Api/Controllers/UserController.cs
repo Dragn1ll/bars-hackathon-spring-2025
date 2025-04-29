@@ -14,6 +14,4 @@ public class UserController(IUserService userService): ControllerBase
         var result = await userService.RegisterAsync(registerUserDto);
         return ResultRouter.GetActionResult(result);
     }
-    
-    
 }

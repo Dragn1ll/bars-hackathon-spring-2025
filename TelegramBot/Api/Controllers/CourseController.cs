@@ -1,3 +1,4 @@
+using Api.Filters;
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
@@ -39,6 +40,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
     
     [HttpGet]
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [Route("all")]
     public async Task<IActionResult> GetCourses()
     {
@@ -47,6 +49,7 @@ public class CourseController(ICourseService courseService): ControllerBase
     }
 
     [HttpGet]
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [Route("{courseId:guid}")]
     public async Task<IActionResult> GetCourse(Guid courseId)
     {

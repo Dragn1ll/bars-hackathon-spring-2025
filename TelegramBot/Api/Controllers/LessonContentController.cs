@@ -33,7 +33,8 @@ public class LessonContentController(ILessonContentService lessonContentService)
         var result = await lessonContentService.RemoveLessonContent(lessonContentId);
         return ResultRouter.GetActionResult(result);
     }
-
+    
+    [Authorize]
     [HttpGet("all/{lessonId:guid}")]
     public async Task<IActionResult> GetAllLessonContent(Guid lessonId)
     {

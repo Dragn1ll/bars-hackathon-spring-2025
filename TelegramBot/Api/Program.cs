@@ -1,4 +1,5 @@
 using Api.Extensions;
+using Api.Filters;
 using Application.Services;
 using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
@@ -54,6 +55,8 @@ services.AddScoped<IUserRepository, UserRepository>();
 services.AddScoped<IAdminRepository, AdminRepository>();
 
 services.AddScoped<IJwtWorker, JwtWorker>();
+
+services.AddScoped<TelegramUserAuthFilter>();
 
 var app = builder.Build();
 

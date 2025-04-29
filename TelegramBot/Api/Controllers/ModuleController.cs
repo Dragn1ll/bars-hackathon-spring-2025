@@ -1,3 +1,4 @@
+using Api.Filters;
 using Domain.Abstractions.Services;
 using Domain.Models.Dto.Admin;
 using Domain.Models.Dto.General;
@@ -37,6 +38,7 @@ public class ModuleController(IModuleService moduleService): ControllerBase
         return ResultRouter.GetActionResult(module);
     }
     
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("all/{courseId:guid}")]
     public async Task<IActionResult> GetModules(Guid courseId)
@@ -44,7 +46,8 @@ public class ModuleController(IModuleService moduleService): ControllerBase
         var modules = await moduleService.GetModules(courseId);
         return ResultRouter.GetActionResult(modules);
     }
-
+    
+    [ServiceFilter(typeof(TelegramUserAuthFilter))]
     [HttpGet]
     [Route("{moduleId:guid}")]
     public async Task<IActionResult> GetModule(Guid moduleId)
